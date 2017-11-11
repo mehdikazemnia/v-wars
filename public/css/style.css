@@ -1,0 +1,20 @@
+body{
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background: #e8edec;
+}
+
+canvas{
+  width: 1200px;
+  height: 600px;
+  border: 1px solid #aaa;
+  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  margin: -300px 0 0 -600px;
+
+
+}
