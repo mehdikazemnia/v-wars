@@ -1,4 +1,14 @@
-class Game {
+var Game = {
+
+    player : false,
+
+    map : false,
+
+    cells : [],
+
+    init: function () {
+       
+    }
 
 }
 
