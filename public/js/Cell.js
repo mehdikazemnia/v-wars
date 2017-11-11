@@ -7,17 +7,17 @@ class Cell {
         this.y = opts.y
         this.r = opts.r
         this.capacity = opts.capacity
-        this.speed = opts.speed
         this.population = opts.population
         this.flag = opts.flag
 
-        this.interval =  false
-        
+        this.interval = false
+        this.timer()
     }
 
     send(id) {
-        this.population /= 2
-        Game.cells[id].recieve(this.population, thi)
+        let tosend = Math.floor(this.population / 2)
+        this.population -= tosend
+        Game.cells[id].recieve(tosend, this.flag)
     }
 
     recieve(amount, flag) {
@@ -29,8 +29,15 @@ class Cell {
         }
     }
 
-    timer(secs) {
-        window.clearInterval(this.timer)
+    timer() {
+        window.clearInterval(this.interval)
+        this.interval = false
+        this.interval = window.setInterval(() => {
+            if (!!this.flag) {
+                this.population++
+                Game.updateBoard()
+            }
+        }, 1000)
     }
 
 }
