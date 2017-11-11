@@ -1,13 +1,22 @@
-var Game = {
+import Map from './Map'
+import Cell from './Cell'
+import Player from './Player'
 
-    player : false,
+window.Game = {
 
-    map : false,
+    player: false,
 
-    cells : [],
+    map: Map,
 
-    init: function () {
-       
+    cells: [],
+
+    init: function (map) {
+        for (let i in this.map.cells) {
+            let cell = new Cell(this.map.cells[i])
+            cell.id = i
+            this.cells.push(cell)
+        }
+        console.log(this.cells)        
     }
 
 }
