@@ -1,35 +1,36 @@
 import Map from './Map'
 import Cell from './Cell'
 import Player from './Player'
+import Fabric from 'fabric'
 
 
 window.Game = {
+    canvas: false,
 
     players: {},
 
     cells: [],
 
     init: function (map) {
+        const fabric = Fabric.fabric
+        // canvas and fabric settings
+        fabric.Object.prototype.hasControls = false
+        fabric.Object.prototype.hasBorders = false
+        fabric.Object.prototype.selectable = false
+        this.canvas = new fabric.Canvas('canvas',{selection:false})
+
         for (let player of Map.players) {
-            this.players[player.id] = {
-                id: player.id,
-                name: player.name
-            }
+            this.players[player.id] = player
         }
         for (let i in Map.cells) {
             let cell = new Cell(i, Map.cells[i])
             cell.id = i
             this.cells.push(cell)
         }
-        console.log(this.players)
-        console.log(this.cells)
+
+
+
     },
-    // temporary ;)
-    updateBoard: function () {
-        for (let cell of this.cells) {
-            console.log('the cell' + cell.id + ' has ' + cell.population + ' phages')
-        }
-    }
 }
 
 export default Game

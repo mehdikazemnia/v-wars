@@ -1,4 +1,4 @@
-body{
+body {
   top: 0;
   right: 0;
   bottom: 0;
@@ -6,15 +6,10 @@ body{
   background: #e8edec;
 }
 
-canvas{
+canvas {
   width: 1000px;
   height: 600px;
   border: 1px solid #aaa;
   display: block;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  margin: -300px 0 0 -500px;
-
-
+  margin: 50px auto;
 }
