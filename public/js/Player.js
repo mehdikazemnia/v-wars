@@ -25,7 +25,7 @@ class Player {
 
         // mouse hover
         Game.canvas.on('mouse:over', (ev) => {
-            if (ev.target && ev.target._id ) {
+            if (ev.target && ev.target._id) {
                 if (this.selecting && this.id === Game.cells[ev.target._id].owner) {
                     this.selectedCells['cell' + ev.target._id] = ev.target._id
                 }
@@ -50,15 +50,18 @@ class Player {
         // click up
         Game.canvas.on('mouse:up', (ev) => {
             if (ev.target && ev.target._id && this.selecting) {
-                for(let cellId in this.selectedCells){
-                    Game.cells[this.selectedCells[cellId]].send(ev.target._id)
+                for (let cellId in this.selectedCells) {
+                    this.selectedCells[cellId] === null || Game.cells[this.selectedCells[cellId]].send(ev.target._id)
                 }
             }
-            for(let cellId in this.selectedCells){
-                Game.cells[this.selectedCells[cellId]].ringElement.set({
-                    opacity: 0
-                })
-                this.selectedCells[cellId] = null
+            console.log(this.selectedCells)
+            for (let cellId in this.selectedCells) {
+                if (this.selectedCells[cellId] !== null) {
+                    Game.cells[this.selectedCells[cellId]].ringElement.set({
+                        opacity: 0
+                    })
+                    this.selectedCells[cellId] = null
+                }
             }
 
             this.selecting = false
