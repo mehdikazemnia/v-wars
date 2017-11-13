@@ -7,10 +7,10 @@ const fabric = Fabric.fabric
 
 
 window.Game = {
+
+    currentPlayer: false,
     canvas: false,
-
     players: {},
-
     cells: [],
 
     init: function (map) {
@@ -26,24 +26,15 @@ window.Game = {
             selection: false
         })
 
-        this.canvas.on('mouse:over', function (ev) {
-            if (ev.target && ev.target._id) {
-                Game.cells[ev.target._id].ringElement.set({
-                    opacity: 1
-                })
-                Game.canvas.renderAll()
-            }
-        })
-
         for (let player of Map.players) {
             this.players[player.id] = player
+            if (!!player.currentPlayer) this.currentPlayer = new Player(player)
         }
         for (let i in Map.cells) {
             let cell = new Cell(i, Map.cells[i])
             cell.id = i
             this.cells.push(cell)
         }
-
 
 
     },

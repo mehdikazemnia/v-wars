@@ -12,6 +12,7 @@ const Map = {
             color: '#aa0000'
         },
         {
+            currentPlayer : true,
             id: 'p22222',
             name: 'akbar',
             color: '#009900'

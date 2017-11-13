@@ -83,7 +83,6 @@ class Cell {
         Game.canvas.renderAll()
     }
 
-
     setTimer() {
         if (!this.owner || this.capacity <= this.population) return false
         this.timer = window.setInterval(() => {
