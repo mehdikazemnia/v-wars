@@ -5,11 +5,10 @@ class Cell {
         this.id = id
         this.x = opts.x
         this.y = opts.y
-        this.r = opts.r
         this.capacity = opts.capacity
         this.population = opts.population
         this.flag = opts.flag
-        this.txt = false
+        this.scale = Math.ceil(Math.sqrt(this.capacity * 16 * Math.PI) * 2 * 10 / 300) / 10
 
 
         this.interval = false
@@ -17,36 +16,20 @@ class Cell {
 
         // visual stuff
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
-            var group = new fabric.PathGroup(objects, {
-                left: 125,
-                top: 125,
-                width: 500,
-                height: 500,
-                scaleX: .5,
-                scaleY: .5,
-                originX: 'center',
-                originY: 'center',
-                hoverCursor: false
-            })
-            this.txt = new fabric.Text(this.population + '', {
-                left: 118,
-                top: 120,
-                fontSize: 50,
-                fontFamily: 'tahoma',
-                fontWeight: 100,
-                textAlign: 'center',
-                originX: 'center',
-                originY: 'center',
-                opacity: .7
-            })
-            this.cellElement = new fabric.Group([group, this.txt], {
+            console.log(this.scale)
+            objects[13].set({fontSize: 50})
+            this.cellElement = new fabric.PathGroup(objects, {
+                width: 300,
+                height: 300,
+                scaleX: this.scale,
+                scaleY: this.scale,
                 left: Game.canvas.width * this.x / 100,
                 top: Game.canvas.height * this.y / 100,
-                width: 250,
-                height: 250,
                 originX: 'center',
                 originY: 'center',
-                fill: Game.players[this.flag] ? Game.players[this.flag].color : '#000000'
+                hoverCursor: 'pointer',
+                perPixelTargetFind: true,
+                fill: Game.players[this.flag] ? Game.players[this.flag].color : '#888',
             })
             Game.canvas.add(this.cellElement)
 
@@ -54,11 +37,14 @@ class Cell {
     }
 
     send(id) {
-        let tosend = Math.floor(this.population / 2)
-        this.population -= tosend
-        this.txt.setText(this.population + '')
+        let tobesent = Math.floor(this.population / 2)
+        this.population -= tobesent
+        console.log(this.cellElement)
+        this.cellElement.paths[13].set({
+            text: this.population + ''
+        })
         Game.canvas.renderAll()
-        Game.cells[id].recieve(tosend, this.flag)
+        Game.cells[id].recieve(tobesent, this.flag)
     }
 
     recieve(amount, flag) {
@@ -70,8 +56,9 @@ class Cell {
             this.cellElement.set({
                 fill: Game.players[this.flag].color
             })
-
-            this.txt.setText(this.population + '')
+            this.cellElement.paths[13].set({
+                text: this.population + ''
+            })
             Game.canvas.renderAll()
         }
     }
@@ -82,10 +69,12 @@ class Cell {
         this.interval = window.setInterval(() => {
             if (!!this.flag && this.capacity > this.population) {
                 this.population++
-                    this.txt.setText(this.population + '')
+                    this.cellElement.paths[13].set({
+                        text: this.population + ''
+                    })
                 Game.canvas.renderAll()
             }
-        }, 1000)
+        },1000)
     }
 
 }

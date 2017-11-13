@@ -18,28 +18,26 @@ const Map = {
         }
     ],
     cells: [{
-            x: 25,
+            x: 20,
             y: 50,
-            r: 100,
             capacity: 100,
             population: 0,
             flag: 'u11111'
         },
         {
-            x: 75,
-            y: 50,
-            r: 100,
-            capacity: 100,
-            population: 0,
-            flag: 'u22222'
-        },
-        {
             x: 50,
             y: 50,
-            r: 100,
-            capacity: 100,
+            capacity: 50,
             population: 0,
-            flag: false
+            flag: false            
+        },
+        {
+            x: 80,
+            y: 50,
+            capacity: 300,
+            population: 0,
+            flag: 'u22222'
+            
         }
     ]
 }
