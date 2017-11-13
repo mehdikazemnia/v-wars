@@ -92,7 +92,7 @@ class Cell {
                 text: this.population + ''
             })
             Game.canvas.renderAll()
-        }, 100)
+        }, 1000)
     }
 
     unsetTimer() {

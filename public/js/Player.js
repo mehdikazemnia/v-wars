@@ -50,7 +50,9 @@ class Player {
         // click up
         Game.canvas.on('mouse:up', (ev) => {
             if (ev.target && ev.target._id && this.selecting) {
-                // TODO : a loop to send phages to target
+                for(let cellId in this.selectedCells){
+                    Game.cells[this.selectedCells[cellId]].send(ev.target._id)
+                }
             }
             for(let cellId in this.selectedCells){
                 Game.cells[this.selectedCells[cellId]].ringElement.set({
