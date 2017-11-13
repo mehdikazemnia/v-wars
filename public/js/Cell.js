@@ -12,6 +12,7 @@ class Cell {
         this.scale = this.scale / 200
 
         this.interval = false
+        this.cellElement = false
 
         this.resetTimer()
 
@@ -67,23 +68,27 @@ class Cell {
         Game.canvas.renderAll()
     }
 
-    resetTimer() {
+
+    setTimer() {
+        if (!this.owner || this.capacity <= this.population) return false
+        this.interval = window.setInterval(() => {
+            if (!this.owner || this.capacity <= this.population) this.unsetTimer()
+            this.population += 1 // to be changed based on phage grow speed
+            this.cellElement.paths[13].set({
+                text: this.population + ''
+            })
+            Game.canvas.renderAll()
+        }, 1000)
+    }
+
+    unsetTimer() {
         window.clearInterval(this.interval)
         this.interval = false
-        if (!!this.owner && this.capacity > this.population) {
-            this.interval = window.setInterval(() => {
-                if (!this.owner && this.capacity <= this.population) {
-                    window.clearInterval(this.interval)
-                    this.interval = false
-                }
-                this.population++
-                    this.cellElement.paths[13].set({
-                        text: this.population + ''
-                    })
-                Game.canvas.renderAll()
-            }, 4000)
-        }
+    }
 
+    resetTimer() {
+        this.unsetTimer()
+        this.setTimer()
     }
 
 }
