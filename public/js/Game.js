@@ -3,6 +3,8 @@ import Cell from './Cell'
 import Player from './Player'
 import Fabric from 'fabric'
 
+const fabric = Fabric.fabric
+
 
 window.Game = {
     canvas: false,
@@ -12,12 +14,15 @@ window.Game = {
     cells: [],
 
     init: function (map) {
-        const fabric = Fabric.fabric
+
         // canvas and fabric settings
         fabric.Object.prototype.hasControls = false
         fabric.Object.prototype.hasBorders = false
         fabric.Object.prototype.selectable = false
-        this.canvas = new fabric.Canvas('canvas',{selection:false})
+
+        this.canvas = new fabric.Canvas('canvas', {
+            selection: false
+        })
 
         for (let player of Map.players) {
             this.players[player.id] = player
