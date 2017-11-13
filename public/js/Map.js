@@ -4,40 +4,46 @@
 // capacity : how many phages maximum
 // speed : time per seconds to create a new phage
 // population : !!!
-// flag : conquerer's color (false if unconquerd)
+// owner : conquerer's color (false if unconquerd)
 const Map = {
     players: [{
-            id: 'u11111',
+            id: 'p11111',
             name: 'mehdi',
             color: '#aa0000'
         },
         {
-            id: 'u22222',
+            id: 'p22222',
             name: 'akbar',
-            color: '#00aa00'
+            color: '#009900'
         }
     ],
     cells: [{
             x: 20,
             y: 50,
             capacity: 100,
-            population: 0,
-            flag: 'u11111'
+            population: 50,
+            owner: 'p11111'
         },
         {
-            x: 50,
+            x: 35,
             y: 50,
             capacity: 50,
-            population: 0,
-            flag: false            
+            population: 5,
+            owner: false            
+        },
+        {
+            x: 55,
+            y: 50,
+            capacity: 150,
+            population: 20,
+            owner: 'p22222' 
         },
         {
             x: 80,
             y: 50,
-            capacity: 300,
-            population: 0,
-            flag: 'u22222'
-            
+            capacity: 200,
+            population: 20,
+            owner: 'p22222' 
         }
     ]
 }
