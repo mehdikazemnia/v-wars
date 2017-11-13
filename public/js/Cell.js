@@ -7,20 +7,23 @@ class Cell {
         this.y = opts.y
         this.capacity = opts.capacity
         this.population = opts.population
-        this.flag = opts.flag
-        this.scale = Math.ceil(Math.sqrt(this.capacity * 16 * Math.PI) * 2 * 10 / 300) / 10
-
+        this.owner = opts.owner || false
+        this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
+        this.scale = this.scale / 200
 
         this.interval = false
-        this.timer()
+
+        this.resetTimer()
 
         // visual stuff
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
-            console.log(this.scale)
-            objects[13].set({fontSize: 50})
+            objects[13].set({ // font size  control
+                fontSize: Math.round(Math.max(45, 25 / this.scale)),
+                text: this.population + ''
+            })
             this.cellElement = new fabric.PathGroup(objects, {
-                width: 300,
-                height: 300,
+                width: 200,
+                height: 200,
                 scaleX: this.scale,
                 scaleY: this.scale,
                 left: Game.canvas.width * this.x / 100,
@@ -29,7 +32,7 @@ class Cell {
                 originY: 'center',
                 hoverCursor: 'pointer',
                 perPixelTargetFind: true,
-                fill: Game.players[this.flag] ? Game.players[this.flag].color : '#888',
+                fill: Game.players[this.owner] ? Game.players[this.owner].color : '#888',
             })
             Game.canvas.add(this.cellElement)
 
@@ -44,37 +47,43 @@ class Cell {
             text: this.population + ''
         })
         Game.canvas.renderAll()
-        Game.cells[id].recieve(tobesent, this.flag)
+        Game.cells[id].recieve(tobesent, this.owner)
     }
 
-    recieve(amount, flag) {
-        if (flag == this.flag) this.population += amount
+    recieve(amount, owner) {
+        if (owner == this.owner) this.population += amount
         else this.population -= amount
         if (this.population < 0) { // lost the cell
             this.population = -this.population
-            this.flag = flag
+            this.owner = owner
             this.cellElement.set({
-                fill: Game.players[this.flag].color
+                fill: Game.players[this.owner].color
             })
-            this.cellElement.paths[13].set({
-                text: this.population + ''
-            })
-            Game.canvas.renderAll()
         }
+        this.cellElement.paths[13].set({
+            text: this.population + ''
+        })
+        this.resetTimer()
+        Game.canvas.renderAll()
     }
 
-    timer() {
+    resetTimer() {
         window.clearInterval(this.interval)
         this.interval = false
-        this.interval = window.setInterval(() => {
-            if (!!this.flag && this.capacity > this.population) {
+        if (!!this.owner && this.capacity > this.population) {
+            this.interval = window.setInterval(() => {
+                if (!this.owner && this.capacity <= this.population) {
+                    window.clearInterval(this.interval)
+                    this.interval = false
+                }
                 this.population++
                     this.cellElement.paths[13].set({
                         text: this.population + ''
                     })
                 Game.canvas.renderAll()
-            }
-        },1000)
+            }, 4000)
+        }
+
     }
 
 }
