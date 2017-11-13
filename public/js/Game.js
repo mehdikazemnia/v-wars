@@ -19,9 +19,20 @@ window.Game = {
         fabric.Object.prototype.hasControls = false
         fabric.Object.prototype.hasBorders = false
         fabric.Object.prototype.selectable = false
+        fabric.Object.prototype.originX = 'center'
+        fabric.Object.prototype.originY = 'center'
 
         this.canvas = new fabric.Canvas('canvas', {
             selection: false
+        })
+
+        this.canvas.on('mouse:over', function (ev) {
+            if (ev.target && ev.target._id) {
+                Game.cells[ev.target._id].ringElement.set({
+                    opacity: 1
+                })
+                Game.canvas.renderAll()
+            }
         })
 
         for (let player of Map.players) {

@@ -2,42 +2,56 @@ class Cell {
 
 
     constructor(id, opts) {
+
         this.id = id
         this.x = opts.x
         this.y = opts.y
+
         this.capacity = opts.capacity
         this.population = opts.population
         this.owner = opts.owner || false
+
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
         this.scale = this.scale / 200
 
-        this.interval = false
+        this.timer = false
+        this.ringElement = false
         this.cellElement = false
-
-        this.resetTimer()
 
         // visual stuff
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
-            objects[13].set({ // font size  control
+            objects[13].set({ // font size control
                 fontSize: Math.round(Math.max(45, 25 / this.scale)),
                 text: this.population + ''
             })
             this.cellElement = new fabric.PathGroup(objects, {
+                _id: this.id,
                 width: 200,
                 height: 200,
                 scaleX: this.scale,
                 scaleY: this.scale,
                 left: Game.canvas.width * this.x / 100,
                 top: Game.canvas.height * this.y / 100,
-                originX: 'center',
-                originY: 'center',
                 hoverCursor: 'pointer',
                 perPixelTargetFind: true,
                 fill: Game.players[this.owner] ? Game.players[this.owner].color : '#888',
             })
+            this.ringElement = new fabric.Circle({
+                radius: 100 * this.scale + 5,
+                left: Game.canvas.width * this.x / 100,
+                top: Game.canvas.height * this.y / 100,
+                stroke: '#aaa',
+                strokeWidth: 2,
+                fill: false,
+                opacity: 0,
+                perPixelTargetFind: true,
+            })
+            Game.canvas.add(this.ringElement)
             Game.canvas.add(this.cellElement)
-
         })
+
+        this.setTimer()
+
     }
 
     send(id) {
@@ -47,7 +61,7 @@ class Cell {
         this.cellElement.paths[13].set({
             text: this.population + ''
         })
-        Game.canvas.renderAll()
+        if (!this.timer) this.setTimer()
         Game.cells[id].recieve(tobesent, this.owner)
     }
 
@@ -61,6 +75,7 @@ class Cell {
                 fill: Game.players[this.owner].color
             })
         }
+        if (this.population > this.capacity) this.population = this.capacity
         this.cellElement.paths[13].set({
             text: this.population + ''
         })
@@ -71,19 +86,19 @@ class Cell {
 
     setTimer() {
         if (!this.owner || this.capacity <= this.population) return false
-        this.interval = window.setInterval(() => {
-            if (!this.owner || this.capacity <= this.population) this.unsetTimer()
+        this.timer = window.setInterval(() => {
+            if (!this.owner || this.capacity <= this.population) return this.unsetTimer()
             this.population += 1 // to be changed based on phage grow speed
             this.cellElement.paths[13].set({
                 text: this.population + ''
             })
             Game.canvas.renderAll()
-        }, 1000)
+        }, 100)
     }
 
     unsetTimer() {
-        window.clearInterval(this.interval)
-        this.interval = false
+        window.clearInterval(this.timer)
+        this.timer = false
     }
 
     resetTimer() {
