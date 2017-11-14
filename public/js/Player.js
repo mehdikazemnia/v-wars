@@ -16,6 +16,7 @@ class Player {
             if (this.isCell(ev) && this.isFriend(ev)) {
                 this.selecting = true
                 this.selectCell(ev)
+                this.updateLines(ev)
             }
         })
 
@@ -49,6 +50,7 @@ class Player {
             this.deselectCells()
 
             this.selectedCells = {}
+            this.connectionLines = {}
             this.selecting = false
         })
 
@@ -94,16 +96,21 @@ class Player {
         if (this.selecting && !this.isSelected(ev)) {
             this.selectedCells['cell' + ev.target._id] = ev.target._id
             // line :)
-            let x1 = Game.cells[ev.target._id].cellElement.left
-            let y1 = Game.cells[ev.target._id].cellElement.top
+            let x0 = Game.cells[ev.target._id].cellElement.left
+            let y0 = Game.cells[ev.target._id].cellElement.top
             let x2 = ev.e.layerX
             let y2 = ev.e.layerY
-            let line = new fabric.Line([x1, y1, x2, y2], {
-                strokeWidth: 4,
+            let line = new fabric.Line([x0, y0, x2, y2], {
+                strokeWidth: 2,
                 stroke: '#aaa'
             })
             Game.canvas.add(line)
-            this.connectionLines['cell' + ev.target._id] = line
+            this.connectionLines['cell' + ev.target._id] = {
+                x0: x0,
+                y0: y0,
+                r: Game.cells[ev.target._id].cellElement.scaleX * 100,
+                line: line
+            }
         }
     }
 
@@ -116,7 +123,9 @@ class Player {
                     opacity: 0
                 })
                 // delete the line
-                this.connectionLines[cellId].remove()
+                this.connectionLines[cellId].line.remove()
+                this.selectedCells[cellId] = null
+                this.connectionLines[cellId] = null
             }
         }
     }
@@ -126,10 +135,22 @@ class Player {
         let x2 = ev.e.layerX
         let y2 = ev.e.layerY
         if (!this.selecting) return false
-        console.log(this.connectionLines)
         for (let key in this.connectionLines) {
-            let line = this.connectionLines[key]
-            line.set({
+            let l = this.connectionLines[key]
+            if (l == null) continue
+            let x0 = l.x0
+            let y0 = l.y0
+            let r = l.r+5
+            let m = (y2 - y0) / (x2 - x0)
+
+            let dx = Math.sqrt((r * r) / ((m * m) + 1))
+            if(x2<=x0) dx = -dx
+            let dy = dx != 0 ? dx * m : (y2>y0)? r : -r
+
+            l.line.set({
+                opacity: (Math.abs(x2 - x0) < r+5 && Math.abs(y2 - y0) < r+5) ? 0 : 1,
+                x1: x0 + dx,
+                y1: y0 + dy,
                 x2: x2,
                 y2: y2
             })

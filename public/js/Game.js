@@ -37,7 +37,7 @@ window.Game = {
         }
 
 
-    },
+    }
 }
 
 export default Game
