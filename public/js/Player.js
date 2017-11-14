@@ -8,6 +8,7 @@ class Player {
 
         this.selecting = false
         this.selectedCells = {}
+        this.connectionLines = {} // 'cell'+cell_id : fabric line object
 
 
         // click down
@@ -41,7 +42,7 @@ class Player {
             // destination ??
             if (this.isCell(ev) && this.selecting) {
                 for (let cellId in this.selectedCells) {
-                    this.selectedCells[cellId] === null|| Game.cells[this.selectedCells[cellId]].send(ev.target._id)
+                    this.selectedCells[cellId] === null || Game.cells[this.selectedCells[cellId]].send(ev.target._id)
                 }
             }
 
@@ -93,18 +94,13 @@ class Player {
 
     // select the given cell
     selectCell(ev) {
-        if (this.selecting) this.selectedCells['cell' + ev.target._id] = ev.target._id
+        if (this.selecting) {
+            this.selectedCells['cell' + ev.target._id] = ev.target._id
+            // line :)
+
+        }
     }
 
-    // deselect the given cell 
-    deselectCell(ev) {
-        this.selectedCells['cell' + ev.target._id] = null
-    }
-
-
-    select() {
-
-    }
 
 }
 
