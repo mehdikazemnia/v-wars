@@ -46,17 +46,14 @@ class Player {
                 }
             }
 
-            // deselect cells 
-            for (let cellId in this.selectedCells) {
-                if (this.selectedCells[cellId] !== null) {
-                    Game.cells[this.selectedCells[cellId]].ringElement.set({
-                        opacity: 0
-                    })
-                }
-            }
+            this.deselectCells()
 
             this.selectedCells = {}
             this.selecting = false
+        })
+
+        Game.canvas.on('mouse:move', (ev) => {
+            this.updateLines(ev)
         })
 
     }
@@ -94,11 +91,50 @@ class Player {
 
     // select the given cell
     selectCell(ev) {
-        if (this.selecting) {
+        if (this.selecting && !this.isSelected(ev)) {
             this.selectedCells['cell' + ev.target._id] = ev.target._id
             // line :)
-
+            let x1 = Game.cells[ev.target._id].cellElement.left
+            let y1 = Game.cells[ev.target._id].cellElement.top
+            let x2 = ev.e.layerX
+            let y2 = ev.e.layerY
+            let line = new fabric.Line([x1, y1, x2, y2], {
+                strokeWidth: 4,
+                stroke: '#aaa'
+            })
+            Game.canvas.add(line)
+            this.connectionLines['cell' + ev.target._id] = line
         }
+    }
+
+    // deselect all cells
+    deselectCells() {
+        for (let cellId in this.selectedCells) {
+            if (this.selectedCells[cellId] !== null) {
+                // hide the ring
+                Game.cells[this.selectedCells[cellId]].ringElement.set({
+                    opacity: 0
+                })
+                // delete the line
+                this.connectionLines[cellId].remove()
+            }
+        }
+    }
+
+    // update lines :)
+    updateLines(ev) {
+        let x2 = ev.e.layerX
+        let y2 = ev.e.layerY
+        if (!this.selecting) return false
+        console.log(this.connectionLines)
+        for (let key in this.connectionLines) {
+            let line = this.connectionLines[key]
+            line.set({
+                x2: x2,
+                y2: y2
+            })
+        }
+        Game.canvas.renderAll()
     }
 
 
