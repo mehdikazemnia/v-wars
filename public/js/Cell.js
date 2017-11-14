@@ -57,7 +57,6 @@ class Cell {
     send(id) {
         let tobesent = Math.floor(this.population / 2)
         this.population -= tobesent
-        console.log(this.cellElement)
         this.cellElement.paths[13].set({
             text: this.population + ''
         })

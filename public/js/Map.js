@@ -2,9 +2,8 @@
 // y : vertical position (%)
 // r : radius (px)
 // capacity : how many phages maximum
-// speed : time per seconds to create a new phage
 // population : !!!
-// owner : conquerer's color (false if unconquerd)
+// owner : conquerer's id (false if unconquerd)
 const Map = {
     players: [{
             id: 'p11111',
