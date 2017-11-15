@@ -1,9 +1,12 @@
+// dependencies
+import Fabric from 'fabric'
+const fabric = Fabric.fabric
+
+// code :)
 import Map from './Map'
 import Cell from './Cell'
 import Player from './Player'
-import Fabric from 'fabric'
 
-const fabric = Fabric.fabric
 
 
 window.Game = {
@@ -15,7 +18,7 @@ window.Game = {
 
     init: function (map) {
 
-        // canvas and fabric settings
+        // default fabric object settings
         fabric.Object.prototype.hasControls = false
         fabric.Object.prototype.hasBorders = false
         fabric.Object.prototype.selectable = false
