@@ -45,7 +45,6 @@ class Player {
 
         // click up
         Game.canvas.on('mouse:up', (ev) => {
-
             // destination ??
             if (this.iscell(ev) && this.selecting) {
                 for (let cellId in this.selectedcells) {
@@ -105,11 +104,20 @@ class Player {
     updatelines(ev) {
         let x = ev.e.layerX
         let y = ev.e.layerY
+        let target = null // by default we assume it not a cell
+        if (this.iscell(ev)) {
+            let c = Game.cells[ev.target._id]
+            target = {
+                x: c.x,
+                y: c.y,
+                r: c.r
+            }
+        }
         if (!this.selecting) return false
         for (let cpid in this.selectedcells) {
             if (!this.selectedcells[cpid]) continue
             let cell = Game.cells[this.selectedcells[cpid]]
-            cell.updateline(null, x, y)
+            cell.updateline(target, x, y)
         }
     }
 

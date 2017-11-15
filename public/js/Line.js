@@ -1,5 +1,19 @@
 class Line {
 
+    _edge(x, y, xc, yc, r) {
+        let m = (y - yc) / (x - xc)
+        r += 5
+        let dx = Math.sqrt((r * r) / ((m * m) + 1))
+        if (x <= xc) dx = -dx
+        let dy = (dx != 0) ? dx * m : (y > yc) ? r : -r
+
+        return {
+            x: xc + dx,
+            y: yc + dy
+        }
+    }
+
+
     constructor(x, y, r) { // x and y are cell's
 
         this.x = x
@@ -22,34 +36,35 @@ class Line {
         this.fab.line.set({
             opacity: 1
         })
-        Game.canvas.renderAll()        
+        Game.canvas.renderAll()
     }
 
     hide() {
         this.fab.line.set({
             opacity: 0
         })
-        Game.canvas.renderAll()        
+        Game.canvas.renderAll()
     }
 
     update(cell, x, y) {
-        // if (cell !== null) {}
 
-        let m = (y - this.y) / (x - this.x)
-        let r = this.r + 5
+        let p1 = false,
+            p2 = false
 
-        let dx = Math.sqrt((r * r) / ((m * m) + 1))
-        if (x <= this.x) dx = -dx
-        let dy = (dx != 0) ? dx * m : (y > this.y) ? r : -r
-
+        if (cell == null) {
+            p1 = this._edge(x, y, this.x, this.y, this.r)
+        } else {
+            p1 = this._edge(cell.x, cell.y, this.x, this.y, this.r)
+            p2 = this._edge(this.x, this.y, cell.x, cell.y, cell.r)
+        }
+        p2 ? console.log(cell,cell.r) : null
         this.fab.line.set({
-            opacity: (Math.abs(x - this.x) < r && Math.abs(y - this.y) < r) ? 0 : 1,
-            x1: this.x + dx,
-            y1: this.y + dy,
-            x2: x,
-            y2: y
+            opacity: (Math.abs(x - this.x) < this.r + 5 && Math.abs(y - this.y) < this.r + 5) ? 0 : 1,
+            x1: p1.x,
+            y1: p1.y,
+            x2: p2 ? p2.x : x,
+            y2: p2 ? p2.y : y
         })
-
         Game.canvas.renderAll()
 
     }

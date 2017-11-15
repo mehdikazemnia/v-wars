@@ -15,9 +15,9 @@ class Cell {
 
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
         this.scale = this.scale / 200
-        this.r = 100 * this.scale,
+        this.r = 100 * this.scale
 
-            this.timer = false
+        this.timer = false
 
         // an object to store visual objects  (fab -> fabric.js)
         this.fab = {}
