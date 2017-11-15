@@ -8,9 +8,9 @@ const fabric = Fabric.fabric
 
 window.Game = {
 
-    currentPlayer: false,
     canvas: false,
     players: {},
+    player: false,
     cells: [],
 
     init: function (map) {
@@ -26,14 +26,14 @@ window.Game = {
             selection: false
         })
 
-        for (let player of Map.players) {
-            this.players[player.id] = player
-            if (!!player.currentPlayer) this.currentPlayer = new Player(player)
+        for (let p of Map.players) {
+            this.players[p.id] = p
+            if (!!p.current) this.player = new Player(p)
         }
         for (let i in Map.cells) {
-            let cell = new Cell(i, Map.cells[i])
-            cell.id = i
-            this.cells.push(cell)
+            let c = new Cell(i, Map.cells[i])
+            c.id = i
+            this.cells.push(c)
         }
 
 

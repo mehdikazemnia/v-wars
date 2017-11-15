@@ -7,33 +7,39 @@ class Player {
         this.color = info.color
 
         this.selecting = false
-        this.selectedCells = {}
-        this.connectionLines = {} // 'cell'+cell_id : fabric line object
+        this.selectedcells = {}
 
 
         // click down
         Game.canvas.on('mouse:down', (ev) => {
-            if (this.isCell(ev) && this.isFriend(ev)) {
-                this.selecting = true
-                this.selectCell(ev)
-                this.updateLines(ev)
+            if (this.iscell(ev)) {
+                let cell = Game.cells[ev.target._id]
+                if (this.isfriend(cell)) {
+                    this.selecting = true
+                    this.select(cell)
+                    this.updatelines(ev)
+                }
             }
         })
 
         // hover
         Game.canvas.on('mouse:over', (ev) => {
-            if (this.isCell(ev)) {
-                this.hoverCell(ev)
-                if (this.selecting && this.isFriend(ev)) {
-                    this.selectCell(ev)
+            if (this.iscell(ev)) {
+                let cell = Game.cells[ev.target._id]
+                cell.hover()
+                if (this.selecting && this.isfriend(cell)) {
+                    this.select(cell)
                 }
             }
         })
 
         // unhover
         Game.canvas.on('mouse:out', (ev) => {
-            if (this.isCell(ev) && !this.isSelected(ev)) {
-                this.unhoverCell(ev)
+            if (this.iscell(ev)) {
+                let cell = Game.cells[ev.target._id]
+                if (!this.isselected(cell)) {
+                    cell.unhover()
+                }
             }
         })
 
@@ -41,121 +47,70 @@ class Player {
         Game.canvas.on('mouse:up', (ev) => {
 
             // destination ??
-            if (this.isCell(ev) && this.selecting) {
-                for (let cellId in this.selectedCells) {
-                    this.selectedCells[cellId] === null || Game.cells[this.selectedCells[cellId]].send(ev.target._id)
+            if (this.iscell(ev) && this.selecting) {
+                for (let cellId in this.selectedcells) {
+                    !this.isselected(Game.cells[this.selectedcells[cellId]]) || Game.cells[this.selectedcells[cellId]].send(ev.target._id)
                 }
             }
-
-            this.deselectCells()
-
-            this.selectedCells = {}
-            this.connectionLines = {}
+            this.deselectall()
             this.selecting = false
         })
 
         Game.canvas.on('mouse:move', (ev) => {
-            this.updateLines(ev)
+            this.updatelines(ev)
         })
 
     }
 
     // check if the given event belongs to a cell
-    isCell(ev) {
+    iscell(ev) {
         return !!(ev.target && ev.target._id)
     }
 
+
     // check if the cell's owner is current player
-    isFriend(ev) {
-        return !!(this.id === Game.cells[ev.target._id].owner)
+    isfriend(cell) {
+        return !!(this.id === cell.owner)
     }
 
     // check if the cell is selected already
-    isSelected(ev) {
-        return !!(this.selectedCells['cell' + ev.target._id])
+    isselected(cell) {
+        return !!(this.selectedcells['cell' + cell.id])
     }
 
-    // show the ring around cell
-    hoverCell(ev) {
-        Game.cells[ev.target._id].ringElement.set({
-            opacity: 1
-        })
-        Game.canvas.renderAll()
-    }
 
-    // hide the ring around cell
-    unhoverCell(ev) {
-        Game.cells[ev.target._id].ringElement.set({
-            opacity: 0
-        })
-        Game.canvas.renderAll()
-    }
+
 
     // select the given cell
-    selectCell(ev) {
-        if (this.selecting && !this.isSelected(ev)) {
-            this.selectedCells['cell' + ev.target._id] = ev.target._id
-            // line :)
-            let x0 = Game.cells[ev.target._id].cellElement.left
-            let y0 = Game.cells[ev.target._id].cellElement.top
-            let x2 = ev.e.layerX
-            let y2 = ev.e.layerY
-            let line = new fabric.Line([x0, y0, x2, y2], {
-                strokeWidth: 2,
-                stroke: '#aaa'
-            })
-            Game.canvas.add(line)
-            this.connectionLines['cell' + ev.target._id] = {
-                x0: x0,
-                y0: y0,
-                r: Game.cells[ev.target._id].cellElement.scaleX * 100,
-                line: line
-            }
+    select(cell) {
+        if (this.selecting && !this.isselected(cell)) {
+            this.selectedcells['cell' + cell.id] = cell.id
         }
     }
 
     // deselect all cells
-    deselectCells() {
-        for (let cellId in this.selectedCells) {
-            if (this.selectedCells[cellId] !== null) {
+    deselectall() {
+        for (let cellId in this.selectedcells) {
+            if (this.selectedcells[cellId] !== null) {
                 // hide the ring
-                Game.cells[this.selectedCells[cellId]].ringElement.set({
-                    opacity: 0
-                })
-                // delete the line
-                this.connectionLines[cellId].line.remove()
-                this.selectedCells[cellId] = null
-                this.connectionLines[cellId] = null
+                let cell = Game.cells[this.selectedcells[cellId]]
+                cell.unhover()
+                cell.hideline()
             }
         }
+        this.selectedcells = {}
     }
 
     // update lines :)
-    updateLines(ev) {
-        let x2 = ev.e.layerX
-        let y2 = ev.e.layerY
+    updatelines(ev) {
+        let x = ev.e.layerX
+        let y = ev.e.layerY
         if (!this.selecting) return false
-        for (let key in this.connectionLines) {
-            let l = this.connectionLines[key]
-            if (l == null) continue
-            let x0 = l.x0
-            let y0 = l.y0
-            let r = l.r+5
-            let m = (y2 - y0) / (x2 - x0)
-
-            let dx = Math.sqrt((r * r) / ((m * m) + 1))
-            if(x2<=x0) dx = -dx
-            let dy = dx != 0 ? dx * m : (y2>y0)? r : -r
-
-            l.line.set({
-                opacity: (Math.abs(x2 - x0) < r+5 && Math.abs(y2 - y0) < r+5) ? 0 : 1,
-                x1: x0 + dx,
-                y1: y0 + dy,
-                x2: x2,
-                y2: y2
-            })
+        for (let cpid in this.selectedcells) {
+            if (!this.selectedcells[cpid]) continue
+            let cell = Game.cells[this.selectedcells[cpid]]
+            cell.updateline(null, x, y)
         }
-        Game.canvas.renderAll()
     }
 
 

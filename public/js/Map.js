@@ -11,7 +11,7 @@ const Map = {
             color: '#aa0000'
         },
         {
-            currentPlayer : true,
+            current : true,
             id: 'p22222',
             name: 'akbar',
             color: '#009900'
@@ -26,7 +26,14 @@ const Map = {
         },
         {
             x: 35,
-            y: 50,
+            y: 60,
+            capacity: 50,
+            population: 5,
+            owner: false            
+        },
+        {
+            x: 35,
+            y: 30,
             capacity: 50,
             population: 5,
             owner: false            
