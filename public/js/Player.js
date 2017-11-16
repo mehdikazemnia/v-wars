@@ -68,7 +68,7 @@ class Player {
 
     // check if the cell's owner is current player
     isfriend(cell) {
-        return !!(this.id === cell.owner)
+        return !!(this.id === cell.playerid)
     }
 
     // check if the cell is selected already

@@ -3,7 +3,7 @@
 // r : radius (px)
 // capacity : how many phages maximum
 // population : !!!
-// owner : conquerer's id (false if unconquerd)
+// playerid : conquerer's id (false if unconquerd)
 const Map = {
     players: [{
             id: 'p11111',
@@ -22,35 +22,35 @@ const Map = {
             y: 50,
             capacity: 100,
             population: 50,
-            owner: 'p11111'
+            playerid: 'p11111'
         },
         {
             x: 35,
             y: 60,
             capacity: 50,
             population: 5,
-            owner: false            
+            playerid: false            
         },
         {
             x: 35,
             y: 30,
             capacity: 50,
             population: 5,
-            owner: false            
+            playerid: false            
         },
         {
             x: 55,
             y: 50,
             capacity: 150,
             population: 20,
-            owner: 'p22222' 
+            playerid: 'p22222' 
         },
         {
             x: 80,
             y: 50,
             capacity: 200,
             population: 20,
-            owner: 'p22222' 
+            playerid: 'p22222' 
         }
     ]
 }

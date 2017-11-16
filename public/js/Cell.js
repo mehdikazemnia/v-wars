@@ -1,4 +1,5 @@
 import Line from './Line'
+import Phage from './Phage'
 
 class Cell {
 
@@ -10,8 +11,13 @@ class Cell {
         this.y = Game.canvas.height * opts.y / 100
 
         this.capacity = opts.capacity
-        this.population = opts.population
-        this.owner = opts.owner || false
+        this.phages = []
+        this.playerid = opts.playerid || false
+
+        for (let i = 0; i < opts.population; i++) {
+            let p = new Phage(this.x, this.y, this.id, this.playerid)
+            this.phages.push(p)
+        }
 
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
         this.scale = this.scale / 200
@@ -29,7 +35,7 @@ class Cell {
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
             objects[13].set({ // font size control
                 fontSize: Math.round(Math.max(40, 20 / this.scale)),
-                text: this.population + ''
+                text: this.phages.length + ''
             })
             this.fab.cell = new fabric.PathGroup(objects, {
                 _id: this.id,
@@ -41,7 +47,7 @@ class Cell {
                 top: this.y,
                 hoverCursor: 'pointer',
                 perPixelTargetFind: true,
-                fill: Game.players[this.owner] ? Game.players[this.owner].color : '#888',
+                fill: Game.players[this.playerid] ? Game.players[this.playerid].color : '#888',
             })
 
             this.fab.ring = new fabric.Circle({
@@ -67,28 +73,32 @@ class Cell {
     // phage transportation
 
     send(id) {
-        let tobesent = Math.floor(this.population / 2)
-        this.population -= tobesent
+        let tobesent = Math.floor(this.phages.length / 2)
+        for (let i = 0; i < tobesent; i++) {
+            let p = this.phages.pop()
+            p.march(id)
+        }
         this.fab.cell.paths[13].set({
-            text: this.population + ''
+            text: this.phages.length + ''
         })
         if (!this.timer) this.settimer()
-        Game.cells[id].recieve(tobesent, this.owner)
     }
 
-    recieve(amount, owner) {
-        if (owner == this.owner) this.population += amount
-        else this.population -= amount
-        if (this.population < 0) { // lost the cell
-            this.population = -this.population
-            this.owner = owner
-            this.fab.cell.set({
-                fill: Game.players[this.owner].color
-            })
+    recieve(phage) {
+        phage.cellid = this.id
+        if (phage.playerid == this.playerid) {
+            this.phages.push(phage)
+        } else {
+            if (this.phages.length === 0) { // empty ?
+                this.playerid = phage.playerid
+                this.fab.cell.set({
+                    fill: Game.players[this.playerid].color
+                })
+            }
+            this.phages.pop()
         }
-        if (this.population > this.capacity) this.population = this.capacity
         this.fab.cell.paths[13].set({
-            text: this.population + ''
+            text: this.phages.length + ''
         })
         this.resettimer()
         Game.canvas.renderAll()
@@ -97,12 +107,13 @@ class Cell {
     // timing 
 
     settimer() {
-        if (!this.owner || this.capacity <= this.population) return false
+        if (!this.playerid || this.capacity <= this.phages.length) return false
         this.timer = window.setInterval(() => {
-            if (!this.owner || this.capacity <= this.population) return this.unsettimer()
-            this.population += 1 // to be changed based on phage grow speed
+            if (!this.playerid || this.capacity <= this.phages.length) return this.unsettimer()
+            let p = new Phage(this.x, this.y, this.id, this.playerid)
+            this.phages.push(p)
             this.fab.cell.paths[13].set({
-                text: this.population + ''
+                text: this.phages.length + ''
             })
             Game.canvas.renderAll()
         }, 1000)
