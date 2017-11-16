@@ -21,8 +21,6 @@ class Phage {
             fill: this.color
         })
 
-
-
         Game.canvas.add(this.fab.phage)
 
     }
@@ -40,7 +38,7 @@ class Phage {
         this.setpos()
     }
 
-    send(cellid) {
+    march(cellid) {
         let c = Game.cells[cellid]
         this.destination = {
             x: c.x,
@@ -48,16 +46,21 @@ class Phage {
             id: c.id
         }
         this.timer = setInterval(() => {
-            console.log('running')
             this.x += (this.x < this.destination.x) ? this.speed : -this.speed
             this.y += (this.y < this.destination.y) ? this.speed : -this.speed
             if(this.destination.x - this.x < 2 && this.destination.y - this.y < 2 ){
-                clearInterval(this.timer)
-                this.timer = false
-                this.destination = false
+                this.hit(cellid)   
             }
             this.setpos()
         }, 10)
+    }
+
+    hit(cellid){
+        clearInterval(this.timer)
+        this.timer = false
+        this.destination = false
+        let c = Game.cells[cellid]
+        c.recieve(1,this.playerid)
     }
 
 

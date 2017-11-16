@@ -48,7 +48,7 @@ window.Game = {
         // test 
         console.log(Game.cells)
         let p = new Phage(Game.cells[0].x, Game.cells[0].y, 0, 'p22222')
-        p.send(2)
+        p.march(2)
 
 
 
