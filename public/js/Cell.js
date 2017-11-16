@@ -73,6 +73,7 @@ class Cell {
     // phage transportation
 
     send(id) {
+        if (this.id == id) return false // cell's can't be able to send to themselves
         let tobesent = Math.floor(this.phages.length / 2)
         let i = 0
         let interval = window.setInterval(() => {
