@@ -4,7 +4,7 @@ class Phage {
     constructor(x, y, cellid, playerid) {
 
         this.destination = false
-        this.step = 30
+        this.step = 10
         this.timer = false
 
         this.x = x

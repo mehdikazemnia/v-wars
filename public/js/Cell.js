@@ -74,10 +74,17 @@ class Cell {
 
     send(id) {
         let tobesent = Math.floor(this.phages.length / 2)
-        for (let i = 0; i < tobesent; i++) {
-            let p = this.phages.pop()
-            p.march(id)
-        }
+        let i = 0
+        let interval = window.setInterval(() => {
+            if (i >= tobesent) {
+                clearInterval(interval)
+                interval = false
+            } else {
+                let p = this.phages.pop()
+                p.march(id)
+                i++
+            }
+        }, 20)
         this.fab.cell.paths[13].set({
             text: this.phages.length + ''
         })
