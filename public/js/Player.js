@@ -66,7 +66,6 @@ class Player {
         return !!(ev.target && ev.target._id)
     }
 
-
     // check if the cell's owner is current player
     isfriend(cell) {
         return !!(this.id === cell.owner)
@@ -76,9 +75,6 @@ class Player {
     isselected(cell) {
         return !!(this.selectedcells['cell' + cell.id])
     }
-
-
-
 
     // select the given cell
     select(cell) {

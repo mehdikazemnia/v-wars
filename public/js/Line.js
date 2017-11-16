@@ -57,7 +57,6 @@ class Line {
             p1 = this._edge(cell.x, cell.y, this.x, this.y, this.r)
             p2 = this._edge(this.x, this.y, cell.x, cell.y, cell.r)
         }
-        p2 ? console.log(cell,cell.r) : null
         this.fab.line.set({
             opacity: (Math.abs(x - this.x) < this.r + 5 && Math.abs(y - this.y) < this.r + 5) ? 0 : 1,
             x1: p1.x,

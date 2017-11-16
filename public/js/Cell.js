@@ -28,7 +28,7 @@ class Cell {
         // visual stuff
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
             objects[13].set({ // font size control
-                fontSize: Math.round(Math.max(45, 25 / this.scale)),
+                fontSize: Math.round(Math.max(40, 20 / this.scale)),
                 text: this.population + ''
             })
             this.fab.cell = new fabric.PathGroup(objects, {
@@ -61,9 +61,7 @@ class Cell {
 
         this.line = new Line(this.x, this.y, this.r)
 
-
         this.settimer()
-
     }
 
     // phage transportation
@@ -135,7 +133,6 @@ class Cell {
         })
         Game.canvas.renderAll()
     }
-
 
     // line stuff
     showline() {
