@@ -7,6 +7,10 @@ import Map from './Map'
 import Cell from './Cell'
 import Player from './Player'
 
+// test 
+import Phage from './Phage'
+
+
 
 
 window.Game = {
@@ -38,6 +42,14 @@ window.Game = {
             c.id = i
             this.cells.push(c)
         }
+
+
+
+        // test 
+        console.log(Game.cells)
+        let p = new Phage(Game.cells[0].x, Game.cells[0].y, 0, 'p22222')
+        p.send(2)
+
 
 
     }
