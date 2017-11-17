@@ -1,4 +1,4 @@
-class Phage {
+class Virus {
 
 
     constructor(x, y, cellid, playerid) {
@@ -14,7 +14,7 @@ class Phage {
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
         this.fab = {}
-        this.fab.phage = new fabric.Circle({
+        this.fab.virus = new fabric.Circle({
             opacity: 0,
             left: this.x,
             top: this.y,
@@ -22,12 +22,12 @@ class Phage {
             fill: this.color
         })
 
-        Game.canvas.add(this.fab.phage)
+        Game.canvas.add(this.fab.virus)
 
     }
 
     setpos() {
-        this.fab.phage.set({
+        this.fab.virus.set({
             left: this.x,
             top: this.y
         })
@@ -40,7 +40,7 @@ class Phage {
     }
 
     march(cellid) {
-        this.fab.phage.set({
+        this.fab.virus.set({
             opacity: 1
         })
         Game.canvas.renderAll()
@@ -65,7 +65,7 @@ class Phage {
         this.timer = false
         this.destination = false
         let c = Game.cells[cellid]
-        this.fab.phage.set({
+        this.fab.virus.set({
             opacity: 0
         })
         Game.canvas.renderAll()
@@ -77,4 +77,4 @@ class Phage {
 
 }
 
-export default Phage
+export default Virus

@@ -1,7 +1,7 @@
 // x : horizontal position (%)
 // y : vertical position (%)
 // r : radius (px)
-// capacity : how many phages maximum
+// capacity : how many viruses maximum
 // population : !!!
 // playerid : conquerer's id (false if unconquerd)
 const Map = {

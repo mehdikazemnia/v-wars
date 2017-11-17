@@ -1,5 +1,5 @@
 import Line from './Line'
-import Phage from './Phage'
+import Virus from './Virus'
 
 class Cell {
 
@@ -11,12 +11,12 @@ class Cell {
         this.y = Game.canvas.height * opts.y / 100
 
         this.capacity = opts.capacity
-        this.phages = []
+        this.viruses = []
         this.playerid = opts.playerid || false
 
         for (let i = 0; i < opts.population; i++) {
-            let p = new Phage(this.x, this.y, this.id, this.playerid)
-            this.phages.push(p)
+            let p = new Virus(this.x, this.y, this.id, this.playerid)
+            this.viruses.push(p)
         }
 
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
@@ -35,7 +35,7 @@ class Cell {
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
             objects[13].set({ // font size control
                 fontSize: Math.round(Math.max(40, 20 / this.scale)),
-                text: this.phages.length + ''
+                text: this.viruses.length + ''
             })
             this.fab.cell = new fabric.PathGroup(objects, {
                 _id: this.id,
@@ -70,43 +70,43 @@ class Cell {
         this.settimer()
     }
 
-    // phage transportation
+    // virus transportation
 
     send(id) {
         if (this.id == id) return false // cell's can't be able to send to themselves
-        let tobesent = Math.floor(this.phages.length / 2)
+        let tobesent = Math.floor(this.viruses.length / 2)
         let i = 0
         let interval = window.setInterval(() => {
             if (i >= tobesent) {
                 clearInterval(interval)
                 interval = false
             } else {
-                let p = this.phages.pop()
+                let p = this.viruses.pop()
                 p.march(id)
                 i++
             }
         }, 20)
         this.fab.cell.paths[13].set({
-            text: this.phages.length + ''
+            text: this.viruses.length + ''
         })
         if (!this.timer) this.settimer()
     }
 
-    recieve(phage) {
-        phage.cellid = this.id
-        if (phage.playerid == this.playerid) {
-            this.phages.push(phage)
+    recieve(virus) {
+        virus.cellid = this.id
+        if (virus.playerid == this.playerid) {
+            this.viruses.push(virus)
         } else {
-            if (this.phages.length === 0) { // empty ?
-                this.playerid = phage.playerid
+            if (this.viruses.length === 0) { // empty ?
+                this.playerid = virus.playerid
                 this.fab.cell.set({
                     fill: Game.players[this.playerid].color
                 })
             }
-            this.phages.pop()
+            this.viruses.pop()
         }
         this.fab.cell.paths[13].set({
-            text: this.phages.length + ''
+            text: this.viruses.length + ''
         })
         this.resettimer()
         Game.canvas.renderAll()
@@ -115,13 +115,13 @@ class Cell {
     // timing 
 
     settimer() {
-        if (!this.playerid || this.capacity <= this.phages.length) return false
+        if (!this.playerid || this.capacity <= this.viruses.length) return false
         this.timer = window.setInterval(() => {
-            if (!this.playerid || this.capacity <= this.phages.length) return this.unsettimer()
-            let p = new Phage(this.x, this.y, this.id, this.playerid)
-            this.phages.push(p)
+            if (!this.playerid || this.capacity <= this.viruses.length) return this.unsettimer()
+            let p = new Virus(this.x, this.y, this.id, this.playerid)
+            this.viruses.push(p)
             this.fab.cell.paths[13].set({
-                text: this.phages.length + ''
+                text: this.viruses.length + ''
             })
             Game.canvas.renderAll()
         }, 1000)
