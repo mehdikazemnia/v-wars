@@ -3,10 +3,6 @@ class Virus {
 
     constructor(x, y, cellid, playerid) {
 
-        this.destination = false
-        this.step = 10
-        this.timer = false
-
         this.x = x
         this.y = y
         this.cellid = cellid
@@ -26,49 +22,31 @@ class Virus {
 
     }
 
-    setpos() {
+    setpos(x, y) {
+        this.x = x
+        this.y = y
         this.fab.virus.set({
             left: this.x,
             top: this.y
         })
-        Game.canvas.renderAll()
     }
 
-    setcell(cellid) {
-        this.cellid = cellid
-        this.setpos()
-    }
-
-    march(cellid) {
+    show() {
         this.fab.virus.set({
             opacity: 1
         })
-        Game.canvas.renderAll()
-        let c = Game.cells[cellid]
-        this.destination = {
-            x: c.x,
-            y: c.y,
-            id: c.id
-        }
-        this.timer = setInterval(() => {
-            this.x += (this.x < this.destination.x) ? this.step : -this.step
-            this.y += (this.y < this.destination.y) ? this.step : -this.step
-            if (Math.abs(this.destination.x - this.x) <= this.step && Math.abs(this.destination.y - this.y) <= this.step) {
-                this.hit(cellid)
-            }
-            this.setpos()
-        }, 20)
     }
 
-    hit(cellid) {
-        clearInterval(this.timer)
-        this.timer = false
-        this.destination = false
-        let c = Game.cells[cellid]
+    hide() {
         this.fab.virus.set({
             opacity: 0
         })
-        Game.canvas.renderAll()
+    }
+
+    hit(cellid) {
+        this.cellid = cellid
+        let c = Game.cells[cellid]
+        this.hide()
         c.recieve(this)
     }
 

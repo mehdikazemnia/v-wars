@@ -6,7 +6,6 @@ class Line {
         let dx = Math.sqrt((r * r) / ((m * m) + 1))
         if (x <= xc) dx = -dx
         let dy = (dx != 0) ? dx * m : (y > yc) ? r : -r
-
         return {
             x: xc + dx,
             y: yc + dy

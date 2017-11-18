@@ -1,5 +1,6 @@
 import Line from './Line'
 import Virus from './Virus'
+import Transmission from './Transmission'
 
 class Cell {
 
@@ -74,18 +75,10 @@ class Cell {
 
     send(id) {
         if (this.id == id) return false // cell's can't be able to send to themselves
-        let tobesent = Math.floor(this.viruses.length / 2)
-        let i = 0
-        let interval = window.setInterval(() => {
-            if (i >= tobesent) {
-                clearInterval(interval)
-                interval = false
-            } else {
-                let p = this.viruses.pop()
-                p.march(id)
-                i++
-            }
-        }, 20)
+        let viruses = this.viruses.splice(0, Math.floor(this.viruses.length / 2))
+        let transmission = new Transmission(this, viruses, Game.cells[id])
+
+
         this.fab.cell.paths[13].set({
             text: this.viruses.length + ''
         })
