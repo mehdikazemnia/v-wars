@@ -1,20 +1,19 @@
+
 class Transmission {
     constructor(origin, viruses, destination) {
+        
         // origin(cell object)
         // viruses(an array of virus objects)
         // destination(cell object)
 
         // viruses will be sent in an invisible cloud holding them
-        this.viruses = viruses    
+        this.viruses = viruses
         this.origin = origin
-        this.destination = destination    
+        this.destination = destination
         this.cloud = {
             x: origin.x,
             y: origin.y
         }
-
-
-      
 
         this.speed = 1 // pixels per second
         this.x1 = origin.x
@@ -37,24 +36,27 @@ class Transmission {
     }
 
     timer() {
+
+
+
+
         setTimeout(() => {
 
-            console.log('timing ...',this.x2,this.y2,this.cloud,this.dx,this.dy)
             this.cloud.x += this.dx
             this.cloud.y += this.dy
 
             this.render()
 
             if (Math.abs(this.cloud.x - this.x2) > Math.abs(this.dx)) {
-                console.log('moving ...')
                 this.cloud.x += this.dx
                 this.cloud.y += this.dy
-                console.log(this.cloud)
                 this.render()
-                this.timer()                
+                this.timer()
             } else {
                 this.hit()
             }
+
+            Game.canvas.renderAll()
 
 
         }, 30);
@@ -64,17 +66,16 @@ class Transmission {
         for (let v in this.viruses) {
             v = this.viruses[v]
             v.setpos(this.cloud.x + Math.random() * 10, this.cloud.y + Math.random() * 10)
-            Game.canvas.renderAll()
         }
     }
 
-    hit(){
-        while(this.viruses.length > 0){
+    hit() {
+        while (this.viruses.length > 0) {
             let v = this.viruses.pop()
             v.setpos(this.cloud.x + Math.random() * 10, this.cloud.y + Math.random() * 10)
             v.hit(this.destination.id)
         }
-     
+
     }
 
 
