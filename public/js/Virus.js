@@ -14,7 +14,7 @@ class Virus {
             opacity: 0,
             left: this.x,
             top: this.y,
-            radius: 5,
+            radius: 3,
             fill: this.color
         })
 
