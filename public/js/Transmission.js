@@ -1,3 +1,5 @@
+import {TweenMax} from 'gsap'
+
 class Transmission {
     constructor(origin, viruses, destination) {
 
@@ -14,7 +16,7 @@ class Transmission {
             y: origin.y
         }
 
-        this.speed = 1 // pixels per second
+        this.speed = 100 // pixels per second
         this.x1 = origin.x
         this.y1 = origin.y
         this.x2 = destination.x
@@ -30,36 +32,32 @@ class Transmission {
             this.dy = this.y1 < this.y2 ? this.speed : -this.speed
         }
 
-
-
-
         for (let v in this.viruses) {
             v = this.viruses[v]
             v.show()
         }
 
-        this.timer()
+        this.run()
     }
 
-    timer() {
-
-        setTimeout(() => {
-
-            this.cloud.x += this.dx
-            this.cloud.y += this.dy
-
-            this.render()
-
-            if (Math.abs(this.cloud.x - this.x2) > Math.abs(this.dx) || Math.abs(this.cloud.y - this.y2) > Math.abs(this.dy)) {
-                this.cloud.x += this.dx
-                this.cloud.y += this.dy
+    run() {
+        new TweenMax(this.cloud, 0.5, {
+            x: this.cloud.x + this.dx,
+            y: this.cloud.y + this.dy,
+            onUpdate: () => {
                 this.render()
-                this.timer()
-            } else {
-                this.hit()
+            },
+            onComplete: () => {
+                setTimeout(() => {
+                    if (Math.abs(this.cloud.x - this.x2) > Math.abs(this.dx) || Math.abs(this.cloud.y - this.y2) > Math.abs(this.dy)) {
+                        this.run()
+                    } else {
+                        this.hit()
+                    }
+                }, 50)
             }
+        })
 
-        }, 30);
     }
 
     render() {
