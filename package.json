@@ -1,22 +1,39 @@
 {
   "name": "v-wars",
-  "version": "0.0.0",
-  "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
+  "version": "1.0.0",
+  "description": "virus wars game",
+  "main": "app.js",
   "dependencies": {
-    "@tweenjs/tween.js": "^17.1.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
-    "body-parser": "~1.18.2",
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.6.9",
-    "ejs": "~2.5.7",
-    "express": "~4.15.5",
-    "fabric": "^1.7.19",
-    "morgan": "~1.9.0",
-    "serve-favicon": "~2.4.5"
+    "body-parser": "^1.18.2",
+    "cookie-parser": "^1.4.3",
+    "debug": "^3.1.0",
+    "ejs": "^2.5.7",
+    "express": "^4.16.2",
+    "fabric": "^1.7.20",
+    "node-gyp": "^3.6.2"
   },
-  "devDependencies": {}
+  "devDependencies": {},
+  "scripts": {
+    "test": "start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mahdikazemnia/v-wars.git"
+  },
+  "keywords": [
+    "game",
+    "virus",
+    "war",
+    "phage",
+    "cell",
+    "wars"
+  ],
+  "author": "Mahdi Kazemnia",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mahdikazemnia/v-wars/issues"
+  },
+  "homepage": "https://github.com/mahdikazemnia/v-wars#readme"
 }
