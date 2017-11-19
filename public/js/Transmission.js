@@ -1,7 +1,6 @@
-
 class Transmission {
     constructor(origin, viruses, destination) {
-        
+
         // origin(cell object)
         // viruses(an array of virus objects)
         // destination(cell object)
@@ -22,9 +21,16 @@ class Transmission {
         this.y2 = destination.y
         this.m = (this.y2 - this.y1) / (this.x2 - this.x1)
 
-        this.dx = Math.sqrt(Math.pow(this.speed, 2) / (1 + Math.pow(this.m, 2)))
-        if (this.x1 > this.x2) this.dx = -this.dx
-        this.dy = (this.dx != 0) ? this.dx * this.m : (this.y1 > this.y2) ? this.speed : -this.speed
+        if (this.x1 != this.x2) {
+            this.dx = Math.sqrt(Math.pow(this.speed, 2) / (1 + Math.pow(this.m, 2)))
+            if (this.x1 > this.x2) this.dx = -this.dx
+            this.dy = (this.dx != 0) ? this.dx * this.m : (this.y1 > this.y2) ? this.speed : -this.speed
+        } else {
+            this.dx = 0
+            this.dy = this.y1 < this.y2 ? this.speed : -this.speed
+        }
+
+
 
 
         for (let v in this.viruses) {
@@ -37,9 +43,6 @@ class Transmission {
 
     timer() {
 
-
-
-
         setTimeout(() => {
 
             this.cloud.x += this.dx
@@ -47,7 +50,7 @@ class Transmission {
 
             this.render()
 
-            if (Math.abs(this.cloud.x - this.x2) > Math.abs(this.dx)) {
+            if (Math.abs(this.cloud.x - this.x2) > Math.abs(this.dx) || Math.abs(this.cloud.y - this.y2) > Math.abs(this.dy)) {
                 this.cloud.x += this.dx
                 this.cloud.y += this.dy
                 this.render()
@@ -55,9 +58,6 @@ class Transmission {
             } else {
                 this.hit()
             }
-
-            
-
 
         }, 30);
     }
