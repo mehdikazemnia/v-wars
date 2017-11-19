@@ -102,7 +102,7 @@ class Cell {
             text: this.viruses.length + ''
         })
         this.resettimer()
-        Game.canvas.renderAll()
+        
     }
 
     // timing 
@@ -116,7 +116,6 @@ class Cell {
             this.fab.cell.paths[13].set({
                 text: this.viruses.length + ''
             })
-            Game.canvas.renderAll()
         }, 1000)
     }
 
@@ -136,14 +135,14 @@ class Cell {
         this.fab.ring.set({
             opacity: 1
         })
-        Game.canvas.renderAll()
+        
     }
 
     unhover() {
         this.fab.ring.set({
             opacity: 0
         })
-        Game.canvas.renderAll()
+        
     }
 
     // line stuff

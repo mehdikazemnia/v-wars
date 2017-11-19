@@ -35,14 +35,14 @@ class Line {
         this.fab.line.set({
             opacity: 1
         })
-        Game.canvas.renderAll()
+        
     }
 
     hide() {
         this.fab.line.set({
             opacity: 0
         })
-        Game.canvas.renderAll()
+        
     }
 
     update(cell, x, y) {
@@ -63,7 +63,7 @@ class Line {
             x2: p2 ? p2.x : x,
             y2: p2 ? p2.y : y
         })
-        Game.canvas.renderAll()
+        
 
     }
 

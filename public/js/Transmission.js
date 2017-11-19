@@ -56,7 +56,7 @@ class Transmission {
                 this.hit()
             }
 
-            Game.canvas.renderAll()
+            
 
 
         }, 30);

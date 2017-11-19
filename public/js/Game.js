@@ -17,6 +17,17 @@ window.Game = {
     players: {},
     player: false,
     cells: [],
+    now: 0,
+
+    run() {
+        requestAnimationFrame(() => {
+            let now = Date.now()
+            console.log(now - this.now)
+            this.now = now
+            Game.canvas.renderAll()
+            this.run()
+        })
+    },
 
     init: function (map) {
 
@@ -41,8 +52,11 @@ window.Game = {
             this.cells.push(c)
         }
 
+        this.run()
 
     }
+
+
 }
 
 export default Game
