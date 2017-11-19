@@ -102,20 +102,25 @@ class Cell {
             text: this.viruses.length + ''
         })
         this.resettimer()
-        
     }
 
     // timing 
 
     settimer() {
-        if (!this.playerid || this.capacity <= this.viruses.length) return false
+        if (!this.playerid) return false
         this.timer = window.setInterval(() => {
-            if (!this.playerid || this.capacity <= this.viruses.length) return this.unsettimer()
-            let p = new Virus(this.x, this.y, this.id, this.playerid)
-            this.viruses.push(p)
-            this.fab.cell.paths[13].set({
-                text: this.viruses.length + ''
-            })
+            if (this.capacity < this.viruses.length) {
+                this.viruses.pop()
+                this.fab.cell.paths[13].set({
+                    text: this.viruses.length + ''
+                })
+            } else if (this.capacity > this.viruses.length) {
+                let p = new Virus(this.x, this.y, this.id, this.playerid)
+                this.viruses.push(p)
+                this.fab.cell.paths[13].set({
+                    text: this.viruses.length + ''
+                })
+            }
         }, 1000)
     }
 
@@ -135,14 +140,14 @@ class Cell {
         this.fab.ring.set({
             opacity: 1
         })
-        
+
     }
 
     unhover() {
         this.fab.ring.set({
             opacity: 0
         })
-        
+
     }
 
     // line stuff
