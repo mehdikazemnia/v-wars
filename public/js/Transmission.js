@@ -18,7 +18,8 @@ class Transmission {
             y: origin.y
         }
 
-        this.speed = 100 // pixels per second
+        this.speed = 100 // pixels per step
+        this.step = 0.8 // per second
 
         this.x1 = origin.x
         this.y1 = origin.y
@@ -47,7 +48,7 @@ class Transmission {
     }
 
     run() {
-        new TweenMax(this.cloud, 0.5, {
+        new TweenMax(this.cloud, this.step, {
             x: this.cloud.x + this.dx,
             y: this.cloud.y + this.dy,
             onUpdate: () => {
