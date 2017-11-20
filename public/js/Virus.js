@@ -13,7 +13,11 @@ class Virus {
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
         // equations and movements
-        this.equations = []
+        this.equations = [] // equations[i] = { dx, dy }
+        this.equation = {
+            dx: 0,
+            dy: 0
+        }
 
         // visual stuff
         this.fab = {}
@@ -62,7 +66,22 @@ class Virus {
 
     // movement calculations
 
-    takeaffect(){}
+    nextmove() {
+
+        for (let cell in Game.cells) {
+            cell = Game.cells[cell]
+            cell.repulse(this)
+        }
+        for (let eq in this.equations) {
+            eq = this.equations[eq]
+            this.equation.dx += eq.dx
+            this.equation.dy += eq.dy
+        }
+
+        this.equation.dx /= this.equations.length
+        this.equation.dy /= this.equations.length
+
+    }
 
 
 

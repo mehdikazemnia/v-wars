@@ -32,12 +32,14 @@ class Cell {
 
         // gravity and repultion
         this.gravity = {
-            ratio: 10
+            k: 10
         }
         this.repultion = {
-            ratio: 10, // amount of power then repulsing 
-            margin: 20 // the affect zone of cell 
+            k: 10, // amount of power then repulsing 
+            margin: 30
         }
+
+        this.R = this.r + this.repultion.margin
 
         // timer (virus creation)
         this.timer = false
@@ -180,10 +182,23 @@ class Cell {
 
     // gravity and repultion
     attract(virus) {
-
+        // make equation
+        // append the equation
     }
 
     repulse(virus) {
+
+        let dx = Math.abs(virus.x - this.x)
+        let dy = Math.abs(virus.y - this.y)
+
+        if (this.R > dx && this.R > dy) { // in range
+            let modifyx = this.repultion.k / (dx * dx)
+            let modifyy = this.repultion.k / (dy * dy)
+            virus.equations.push([
+                virus.x > this.x ? modifyx : -modifyx,
+                virus.x > this.x ? modifyx : -modifyx
+            ])
+        }
 
     }
 
