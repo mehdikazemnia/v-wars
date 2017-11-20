@@ -46,6 +46,7 @@ class Virus {
     hit(cellid) {
         this.cellid = cellid
         let c = Game.cells[cellid]
+        this.setpos(c.x, c.y)
         this.hide()
         c.recieve(this)
     }
