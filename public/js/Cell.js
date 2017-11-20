@@ -7,23 +7,30 @@ class Cell {
 
     constructor(id, opts) {
 
+        // identity 
         this.id = id
+        this.playerid = opts.playerid || false
+
+        // position
         this.x = Game.canvas.width * opts.x / 100
         this.y = Game.canvas.height * opts.y / 100
 
+        // capacity ...
         this.capacity = opts.capacity
         this.viruses = []
-        this.playerid = opts.playerid || false
 
+        // appending viruses
         for (let i = 0; i < opts.population; i++) {
             let p = new Virus(this.x, this.y, this.id, this.playerid)
             this.viruses.push(p)
         }
 
+        // size
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
         this.scale = this.scale / 200
         this.r = 100 * this.scale
 
+        // timer (virus creation)
         this.timer = false
 
         // an object to store visual objects  (fab -> fabric.js)
@@ -65,9 +72,9 @@ class Cell {
             Game.canvas.add(this.fab.ring)
             Game.canvas.add(this.fab.cell)
         })
-
         this.line = new Line(this.x, this.y, this.r)
 
+        // start creating
         this.settimer()
     }
 
@@ -77,12 +84,9 @@ class Cell {
         if (this.id == id) return false // cell's can't be able to send to themselves
         let viruses = this.viruses.splice(0, Math.floor(this.viruses.length / 2))
         let transmission = new Transmission(this, viruses, Game.cells[id])
-
-
         this.fab.cell.paths[13].set({
             text: this.viruses.length + ''
         })
-        if (!this.timer) this.settimer()
     }
 
     recieve(virus) {
@@ -95,19 +99,21 @@ class Cell {
                 this.fab.cell.set({
                     fill: Game.players[this.playerid].color
                 })
+                this.viruses.push(virus)
+                this.resettimer()
+            } else {
+                this.viruses.pop()
             }
-            this.viruses.pop()
         }
         this.fab.cell.paths[13].set({
             text: this.viruses.length + ''
         })
-        this.resettimer()
     }
 
     // timing 
 
     settimer() {
-        if (!this.playerid) return false
+        if (!this.playerid) return false // only owned cells produce viruses
         this.timer = window.setInterval(() => {
             if (this.capacity < this.viruses.length) {
                 this.viruses.pop()
@@ -135,7 +141,7 @@ class Cell {
     }
 
     // hover effects
-
+    
     hover() {
         this.fab.ring.set({
             opacity: 1
