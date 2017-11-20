@@ -178,6 +178,15 @@ class Cell {
         return this.line.update(cell, x, y)
     }
 
+    // gravity and repultion
+    attract(virus) {
+
+    }
+
+    repulse(virus) {
+
+    }
+
 }
 
 export default Cell

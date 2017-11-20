@@ -3,12 +3,19 @@ class Virus {
 
     constructor(x, y, cellid, playerid) {
 
+        // positions
         this.x = x
         this.y = y
+
+        // place and owner
         this.cellid = cellid
         this.playerid = playerid
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
+        // equations and movements
+        this.equations = []
+
+        // visual stuff
         this.fab = {}
         this.fab.virus = new fabric.Circle({
             opacity: 0,
@@ -17,20 +24,11 @@ class Virus {
             radius: 3,
             fill: this.color
         })
-
         Game.canvas.add(this.fab.virus)
 
     }
 
-    setpos(x, y) {
-        this.x = x
-        this.y = y
-        this.fab.virus.set({
-            left: this.x,
-            top: this.y
-        })
-    }
-
+    // visibility
     show() {
         this.fab.virus.set({
             opacity: 1
@@ -43,6 +41,17 @@ class Virus {
         })
     }
 
+    // position
+
+    setpos(x, y) {
+        this.x = x
+        this.y = y
+        this.fab.virus.set({
+            left: this.x,
+            top: this.y
+        })
+    }
+
     hit(cellid) {
         this.cellid = cellid
         let c = Game.cells[cellid]
@@ -50,6 +59,10 @@ class Virus {
         this.hide()
         c.recieve(this)
     }
+
+    // movement calculations
+
+    takeaffect()
 
 
 
