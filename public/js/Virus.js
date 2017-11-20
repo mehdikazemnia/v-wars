@@ -62,7 +62,7 @@ class Virus {
 
     // movement calculations
 
-    takeaffect()
+    takeaffect(){}
 
 
 
