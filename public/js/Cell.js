@@ -30,6 +30,15 @@ class Cell {
         this.scale = this.scale / 200
         this.r = 100 * this.scale
 
+        // gravity and repultion
+        this.gravity = {
+            ratio: 10
+        }
+        this.repultion = {
+            ratio: 10, // amount of power then repulsing 
+            margin: 20 // the affect zone of cell 
+        }
+
         // timer (virus creation)
         this.timer = false
 
@@ -141,7 +150,7 @@ class Cell {
     }
 
     // hover effects
-    
+
     hover() {
         this.fab.ring.set({
             opacity: 1
