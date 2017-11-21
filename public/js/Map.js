@@ -51,7 +51,35 @@ const Map = {
             capacity: 200,
             population: 1,
             playerid: 'p22222' 
-        }
+        },
+        {
+            x: 10,
+            y: 70,
+            capacity: 50,
+            population: 1,
+            playerid: false            
+        },
+        {
+            x: 10,
+            y: 35,
+            capacity: 50,
+            population: 1,
+            playerid: false            
+        },
+        {
+            x: 20,
+            y: 85,
+            capacity: 50,
+            population: 1,
+            playerid: false            
+        },
+        {
+            x: 75,
+            y: 80,
+            capacity: 50,
+            population: 1,
+            playerid: false            
+        },
     ]
 }
 export default Map 
