@@ -1,6 +1,5 @@
 import Line from './Line'
 import Virus from './Virus'
-import Transmission from './Transmission'
 
 class Cell {
 
@@ -35,11 +34,9 @@ class Cell {
             k: 10
         }
         this.repultion = {
-            k: 10, // amount of power then repulsing 
-            margin: 30
+            k: 4000000, // amount of power then repulsing 
+            margin: this.r * 1.4
         }
-
-        this.R = this.r + this.repultion.margin
 
         // timer (virus creation)
         this.timer = false
@@ -48,6 +45,7 @@ class Cell {
         this.fab = {}
         this.fab.ring = false
         this.fab.cell = false
+        this.fab.margin = false
         this.line = false
 
         // visual stuff
@@ -70,7 +68,7 @@ class Cell {
             })
 
             this.fab.ring = new fabric.Circle({
-                radius: 100 * this.scale + 5,
+                radius: this.r + 5,
                 left: this.x,
                 top: this.y,
                 stroke: '#aaa',
@@ -80,6 +78,15 @@ class Cell {
                 perPixelTargetFind: true,
             })
 
+            this.fab.margin = new fabric.Circle({
+                radius: this.repultion.margin,
+                left: this.x,
+                top: this.y,
+                fill: '#aaa',
+                opacity: .1
+            })
+
+            Game.canvas.add(this.fab.margin)
             Game.canvas.add(this.fab.ring)
             Game.canvas.add(this.fab.cell)
         })
@@ -94,7 +101,10 @@ class Cell {
     send(id) {
         if (this.id == id) return false // cell's can't be able to send to themselves
         let viruses = this.viruses.splice(0, Math.floor(this.viruses.length / 2))
-        let transmission = new Transmission(this, viruses, Game.cells[id])
+        for (let v in viruses) {
+            v = viruses[v]
+            v.march(id)
+        }
         this.fab.cell.paths[13].set({
             text: this.viruses.length + ''
         })
@@ -182,22 +192,35 @@ class Cell {
 
     // gravity and repultion
     attract(virus) {
-        // make equation
-        // append the equation
+        let dx = Math.abs(virus.x - this.x)
+        let dy = Math.abs(virus.y - this.y)
+        let modifyx = this.gravity.k * dx
+        let modifyy = this.gravity.k * dy
+        virus.equations.push({
+            dx: virus.x > this.x ? -modifyx : modifyx,
+            dy: virus.y > this.y ? -modifyy : modifyy
+        })
     }
 
     repulse(virus) {
 
-        let dx = Math.abs(virus.x - this.x)
-        let dy = Math.abs(virus.y - this.y)
+        let dx = virus.x - this.x
+        let dy = virus.y - this.y
 
-        if (this.R > dx && this.R > dy) { // in range
-            let modifyx = this.repultion.k / (dx * dx)
-            let modifyy = this.repultion.k / (dy * dy)
-            virus.equations.push([
-                virus.x > this.x ? modifyx : -modifyx,
-                virus.x > this.x ? modifyx : -modifyx
-            ])
+        if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in range
+
+            let distance = Math.sqrt((dx * dx) + (dy * dy))
+            let F = this.repultion.k / (distance * distance)
+
+            let equation = {
+                x: (dx / distance) * F,
+                y: (dy / distance) * F
+            }
+
+            virus.equations.push({
+                dx: equation.x,
+                dy: equation.y
+            })
         }
 
     }

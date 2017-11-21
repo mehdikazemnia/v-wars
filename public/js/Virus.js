@@ -1,3 +1,7 @@
+import {
+    TweenMax
+} from 'gsap'
+
 class Virus {
 
 
@@ -17,6 +21,16 @@ class Virus {
         this.equation = {
             dx: 0,
             dy: 0
+        }
+        this.movement = {
+            animation: false,
+            step: 1,
+            time: .001
+        }
+        this.target = {
+            x: 0,
+            y: 0,
+            r: 0
         }
 
         // visual stuff
@@ -47,9 +61,7 @@ class Virus {
 
     // position
 
-    setpos(x, y) {
-        this.x = x
-        this.y = y
+    renderpos() {
         this.fab.virus.set({
             left: this.x,
             top: this.y
@@ -59,28 +71,71 @@ class Virus {
     hit(cellid) {
         this.cellid = cellid
         let c = Game.cells[cellid]
-        this.setpos(c.x, c.y)
+        this.x = c.x
+        this.y = c.y
+        this.renderpos()
         this.hide()
         c.recieve(this)
     }
 
     // movement calculations
 
-    nextmove() {
+    march(targetid) {
+        this.show()
+        let target = Game.cells[targetid]
+        this.target.x = target.x
+        this.target.y = target.y
+        this.target.r = target.r
+
+        target.attract(this)
 
         for (let cell in Game.cells) {
+            if (cell == targetid || cell == this.cellid) continue
             cell = Game.cells[cell]
             cell.repulse(this)
         }
+
+
         for (let eq in this.equations) {
             eq = this.equations[eq]
             this.equation.dx += eq.dx
             this.equation.dy += eq.dy
         }
 
+
         this.equation.dx /= this.equations.length
         this.equation.dy /= this.equations.length
 
+
+
+        let m = this.equation.dy / this.equation.dx
+        let dx = Math.sqrt((this.movement.step * this.movement.step) / ((m * m) + 1))
+        if (this.x > this.target.x) dx = -dx
+        let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.movement.step : -this.movement.step
+
+        this.movement.animation = new TweenMax(this, this.movement.time, {
+            x: this.x + dx,
+            y: this.y + dy,
+            ease: Power0.easeNone,
+            onUpdate: () => {
+                if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
+                    this.renderpos()
+                } else {
+                    this.movement.animation.pause()
+                    this.hit(targetid)
+                }
+            },
+            onComplete: () => {
+                if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
+                    this.equations = []
+                    this.equation = {
+                        dx: 0,
+                        dy: 0
+                    }
+                    this.march(targetid)
+                }
+            }
+        })
     }
 
 
