@@ -34,8 +34,8 @@ class Cell {
             k: 10
         }
         this.repultion = {
-            k: 4000000, // amount of power then repulsing 
-            margin: this.r * 1.4
+            k: 100000, // amount of power then repulsing 
+            margin: this.r + 30
         }
 
         // timer (virus creation)
@@ -45,7 +45,6 @@ class Cell {
         this.fab = {}
         this.fab.ring = false
         this.fab.cell = false
-        this.fab.margin = false
         this.line = false
 
         // visual stuff
@@ -78,16 +77,6 @@ class Cell {
                 perPixelTargetFind: true,
             })
 
-            this.fab.margin = new fabric.Circle({// test
-                radius: this.repultion.margin,
-                left: this.x,
-                top: this.y,
-                fill: '#aaa',
-                stroke: '#000',
-                opacity: 0.05
-            })
-
-            Game.canvas.add(this.fab.margin)
             Game.canvas.add(this.fab.ring)
             Game.canvas.add(this.fab.cell)
         })
@@ -195,8 +184,8 @@ class Cell {
 
     // gravity and repultion
     attract(virus) {
-        let dx = Math.abs(virus.x - this.x)
-        let dy = Math.abs(virus.y - this.y)
+        let dx = Math.abs(parseFloat(virus.x - this.x))
+        let dy = Math.abs(parseFloat(virus.y - this.y))
         let modifyx = this.gravity.k * dx
         let modifyy = this.gravity.k * dy
         virus.equations.push({
@@ -207,12 +196,11 @@ class Cell {
 
     repulse(virus) {
 
-        let dx = virus.x - this.x
-        let dy = virus.y - this.y
+        let dx = Math.abs(virus.x - this.x)
+        let dy = Math.abs(virus.y - this.y)
 
         if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in range
-
-            let distance = Math.sqrt((dx * dx) + (dy * dy))
+            let distance = Math.abs(Math.sqrt((dx * dx) + (dy * dy))) - this.r * .6
             let F = this.repultion.k / (distance * distance)
 
             let equation = {
@@ -220,10 +208,14 @@ class Cell {
                 y: (dy / distance) * F
             }
 
+            equation.x = virus.x > this.x ? equation.x : -equation.x
+            equation.y = virus.y > this.y ? equation.y : -equation.y
+
             virus.equations.push({
                 dx: equation.x,
                 dy: equation.y
             })
+
         }
 
     }

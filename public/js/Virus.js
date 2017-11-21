@@ -49,13 +49,15 @@ class Virus {
     // visibility
     show() {
         this.fab.virus.set({
-            opacity: 1
+            opacity: 1,
+            radius: 3
         })
     }
 
     hide() {
         this.fab.virus.set({
-            opacity: 0
+            opacity: 0,
+            radius: 0
         })
     }
 
@@ -95,22 +97,15 @@ class Virus {
             cell.repulse(this)
         }
 
-
         for (let eq in this.equations) {
             eq = this.equations[eq]
             this.equation.dx += eq.dx
             this.equation.dy += eq.dy
         }
 
-
-        this.equation.dx /= this.equations.length
-        this.equation.dy /= this.equations.length
-
-
-
         let m = this.equation.dy / this.equation.dx
         let dx = Math.sqrt((this.movement.step * this.movement.step) / ((m * m) + 1))
-        if (this.x > this.target.x) dx = -dx
+        if (this.equation.dx < 0) dx = -dx
         let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.movement.step : -this.movement.step
 
         this.movement.animation = new TweenMax(this, this.movement.time, {
