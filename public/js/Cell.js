@@ -78,12 +78,13 @@ class Cell {
                 perPixelTargetFind: true,
             })
 
-            this.fab.margin = new fabric.Circle({
+            this.fab.margin = new fabric.Circle({// test
                 radius: this.repultion.margin,
                 left: this.x,
                 top: this.y,
                 fill: '#aaa',
-                opacity: .1
+                stroke: '#000',
+                opacity: 0.05
             })
 
             Game.canvas.add(this.fab.margin)
@@ -103,6 +104,8 @@ class Cell {
         let viruses = this.viruses.splice(0, Math.floor(this.viruses.length / 2))
         for (let v in viruses) {
             v = viruses[v]
+            v.x = this.x + (Math.random() * 20) - (Math.random() * 20)
+            v.y = this.y + (Math.random() * 20) - (Math.random() * 20)
             v.march(id)
         }
         this.fab.cell.paths[13].set({

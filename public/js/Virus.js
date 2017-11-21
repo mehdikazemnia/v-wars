@@ -24,8 +24,8 @@ class Virus {
         }
         this.movement = {
             animation: false,
-            step: 1,
-            time: .001
+            step: 2 + Math.random(),
+            time: .01
         }
         this.target = {
             x: 0,
