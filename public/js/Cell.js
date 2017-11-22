@@ -189,8 +189,8 @@ class Cell {
         let modifyx = this.gravity.k * dx
         let modifyy = this.gravity.k * dy
         virus.equations.push({
-            dx: virus.x > this.x ? -modifyx : modifyx,
-            dy: virus.y > this.y ? -modifyy : modifyy
+            dx: Math.round((virus.x > this.x ? -modifyx : modifyx)* 6) / 6,
+            dy: Math.round((virus.y > this.y ? -modifyy : modifyy)* 6) / 6
         })
     }
 
@@ -212,8 +212,8 @@ class Cell {
             equation.y = virus.y > this.y ? equation.y : -equation.y
 
             virus.equations.push({
-                dx: equation.x,
-                dy: equation.y
+                dx: Math.round(equation.x* 6) / 6,
+                dy: Math.round(equation.y* 6) / 6
             })
 
         }
