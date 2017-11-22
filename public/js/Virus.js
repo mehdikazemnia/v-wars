@@ -24,8 +24,8 @@ class Virus {
         }
         this.movement = {
             animation: false,
-            step: 2,
-            time: .01
+            step: 3,
+            time: .016
         }
         this.target = {
             x: 0,
@@ -36,7 +36,7 @@ class Virus {
         // visual stuff
         this.fab = {}
         this.fab.virus = new fabric.Circle({
-            opacity: 0,
+            opacity: 0.6,
             left: this.x,
             top: this.y,
             radius: 0,
@@ -49,14 +49,12 @@ class Virus {
     // visibility
     show() {
         this.fab.virus.set({
-            opacity: 1,
-            radius: 3
+            radius: 4
         })
     }
 
     hide() {
         this.fab.virus.set({
-            opacity: 0,
             radius: 0
         })
     }
