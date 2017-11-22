@@ -79,6 +79,7 @@ class Player {
     // select the given cell
     select(cell) {
         if (this.selecting && !this.isselected(cell)) {
+            cell.showline()
             this.selectedcells['cell' + cell.id] = cell.id
         }
     }
