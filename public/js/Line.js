@@ -22,7 +22,6 @@ class Line {
         // an object to store visual objects  (fab -> fabric.js)
         this.fab = {}
         this.fab.line = new fabric.Line([this.x, this.y, this.x, this.y], {
-            opacity: 0,
             strokeWidth: 2,
             stroke: '#aaa'
         })
@@ -33,14 +32,14 @@ class Line {
 
     show() {
         this.fab.line.set({
-            opacity: 1
+            strokeWidth: 2
         })
         
     }
 
     hide() {
         this.fab.line.set({
-            opacity: 0
+            strokeWidth: 0
         })
         
     }
@@ -57,7 +56,6 @@ class Line {
             p2 = this._edge(this.x, this.y, cell.x, cell.y, cell.r)
         }
         this.fab.line.set({
-            opacity: (Math.abs(x - this.x) < this.r + 5 && Math.abs(y - this.y) < this.r + 5) ? 0 : 1,
             x1: p1.x,
             y1: p1.y,
             x2: p2 ? p2.x : x,
