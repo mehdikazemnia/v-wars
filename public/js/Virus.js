@@ -24,7 +24,7 @@ class Virus {
         }
         this.movement = {
             animation: false,
-            step: 2 + Math.random(),
+            step: 2,
             time: .01
         }
         this.target = {
@@ -39,7 +39,7 @@ class Virus {
             opacity: 0,
             left: this.x,
             top: this.y,
-            radius: 3,
+            radius: 0,
             fill: this.color
         })
         Game.canvas.add(this.fab.virus)
