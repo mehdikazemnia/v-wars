@@ -191,15 +191,7 @@ const Map = {
             capacity: 100,
             population: 1,
             playerid: 'p22222'
-        },
-
-
-
-
-
-
-
-
+        }
     ]
 }
 export default Map

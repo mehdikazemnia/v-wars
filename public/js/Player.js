@@ -17,7 +17,7 @@ class Player {
                 if (this.isfriend(cell)) {
                     this.selecting = true
                     this.select(cell)
-                    this.updatelines(ev)
+                    this.poslines(ev)
                 }
             }
         })
@@ -56,7 +56,7 @@ class Player {
         })
 
         Game.canvas.on('mouse:move', (ev) => {
-            this.updatelines(ev)
+            this.poslines(ev)
         })
 
     }
@@ -79,7 +79,7 @@ class Player {
     // select the given cell
     select(cell) {
         if (this.selecting && !this.isselected(cell)) {
-            cell.showline()
+            cell.line.show()
             this.selectedcells['cell' + cell.id] = cell.id
         }
     }
@@ -91,14 +91,14 @@ class Player {
                 // hide the ring
                 let cell = Game.cells[this.selectedcells[cellId]]
                 cell.unhover()
-                cell.hideline()
+                cell.line.hide()
             }
         }
         this.selectedcells = {}
     }
 
-    // update lines :)
-    updatelines(ev) {
+    // update line positions :)
+    poslines(ev) {
         let x = ev.e.layerX
         let y = ev.e.layerY
         let target = null // by default we assume it not a cell
@@ -114,7 +114,7 @@ class Player {
         for (let cpid in this.selectedcells) {
             if (!this.selectedcells[cpid]) continue
             let cell = Game.cells[this.selectedcells[cpid]]
-            cell.updateline(target, x, y)
+            cell.line.pos(target, x, y)
         }
     }
 

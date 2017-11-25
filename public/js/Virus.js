@@ -25,13 +25,12 @@ class Virus {
         this.movement = {
             animation: false,
             step: 3,
-            time: .016
+            time: .02
         }
-        this.target = {
-            x: 0,
-            y: 0,
-            r: 0
-        }
+
+        // target and obstacles
+        this.target = {}
+        this.obstacles = []
 
         // visual stuff
         this.fab = {}
@@ -47,6 +46,7 @@ class Virus {
     }
 
     // visibility
+
     show() {
         this.fab.virus.set({
             radius: 4
@@ -68,44 +68,61 @@ class Virus {
         })
     }
 
-    hit(cellid) {
-        this.cellid = cellid
-        let c = Game.cells[cellid]
-        this.x = c.x
-        this.y = c.y
+    land() {
+        this.cellid = this.target.id
+        this.x = this.target.x
+        this.y = this.target.y
         this.renderpos()
         this.hide()
-        c.recieve(this)
+        this.target.recieve(this)
     }
 
     // movement calculations
 
-    march(targetid) {
+    dispatch(targetid) {
         this.show()
-        let target = Game.cells[targetid]
-        this.target.x = target.x
-        this.target.y = target.y
-        this.target.r = target.r
+        this.target = Game.cells[targetid]
+        this.obstacles = []
 
-        target.attract(this)
-
-        for (let cell in Game.cells) {
-            if (cell == targetid || cell == this.cellid) continue
-            cell = Game.cells[cell]
-            cell.repulse(this)
+        for (let c in Game.cells) {
+            if (c == targetid || c == this.cellid) continue
+            this.obstacles.push(Game.cells[c])
         }
 
-        for (let eq in this.equations) {
-            eq = this.equations[eq]
-            this.equation.dx += eq.dx
-            this.equation.dy += eq.dy
+        this.step()
+    }
+
+    step() {
+
+        // resetting the equations
+        this.equations = []
+        this.equation = {
+            dx: 0,
+            dy: 0
         }
 
+        // attract equation
+        this.target.attract(this)
+
+        // repulse equations
+        for (let o in this.obstacles) {
+            this.obstacles[o].repulse(this)
+        }
+
+        // calculating the final equation
+        for (let e in this.equations) {
+            e = this.equations[e]
+            this.equation.dx += e.dx
+            this.equation.dy += e.dy
+        }
+
+        // modify the equation by step
         let m = this.equation.dy / this.equation.dx
         let dx = Math.sqrt((this.movement.step * this.movement.step) / ((m * m) + 1))
         if (this.equation.dx < 0) dx = -dx
         let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.movement.step : -this.movement.step
 
+        // step animation
         this.movement.animation = new TweenMax(this, this.movement.time, {
             x: this.x + dx,
             y: this.y + dy,
@@ -115,22 +132,17 @@ class Virus {
                     this.renderpos()
                 } else {
                     this.movement.animation.pause()
-                    this.hit(targetid)
+                    this.land()
                 }
             },
             onComplete: () => {
                 if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
-                    this.equations = []
-                    this.equation = {
-                        dx: 0,
-                        dy: 0
-                    }
-                    this.march(targetid)
+                    this.step()
                 }
             }
         })
-    }
 
+    }
 
 
 

@@ -7,10 +7,6 @@ import Map from './Map'
 import Cell from './Cell'
 import Player from './Player'
 
-
-
-
-
 window.Game = {
 
     canvas: false,
@@ -18,14 +14,14 @@ window.Game = {
     player: false,
     cells: [],
 
-    run() {
+    render() {
         requestAnimationFrame(() => {
-            Game.canvas.renderAll()
-            this.run()
+            this.canvas.renderAll()
+            this.render()
         })
     },
 
-    init: function (map) {
+    init: function () {
 
         // default fabric object settings
         fabric.Object.prototype.hasControls = false
@@ -34,24 +30,28 @@ window.Game = {
         fabric.Object.prototype.originX = 'center'
         fabric.Object.prototype.originY = 'center'
 
+        // fetching the canvas for fabric js
         this.canvas = new fabric.Canvas('canvas', {
             selection: false
         })
 
+        // fetching players
         for (let p of Map.players) {
             this.players[p.id] = p
             if (!!p.current) this.player = new Player(p)
         }
+
+        // fetching cells
         for (let i in Map.cells) {
             let c = new Cell(i, Map.cells[i])
-            c.id = i
             this.cells.push(c)
         }
 
-        this.run()
+
+        // start the render loop
+        this.render()
 
     }
-
 
 }
 

@@ -3,31 +3,31 @@ import Virus from './Virus'
 
 class Cell {
 
-
-    constructor(id, opts) {
+    constructor(id, info) {
 
         // identity 
         this.id = id
-        this.playerid = opts.playerid || false
+        this.playerid = info.playerid || false
 
         // position
-        this.x = Game.canvas.width * opts.x / 100
-        this.y = Game.canvas.height * opts.y / 100
+        this.x = Game.canvas.width * info.x / 100
+        this.y = Game.canvas.height * info.y / 100
 
-        // capacity ...
-        this.capacity = opts.capacity
+        // capacity & storage ...
+        this.capacity = info.capacity
         this.viruses = []
-
-        // appending viruses
-        for (let i = 0; i < opts.population; i++) {
-            let p = new Virus(this.x, this.y, this.id, this.playerid)
-            this.viruses.push(p)
-        }
 
         // size
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
         this.scale = this.scale / 200
         this.r = 100 * this.scale
+
+
+        // appending viruses
+        for (let i = 0; i < info.population; i++) {
+            let p = new Virus(this.x, this.y, this.id, this.playerid)
+            this.viruses.push(p)
+        }
 
         // gravity and repultion
         this.gravity = {
@@ -41,13 +41,16 @@ class Cell {
         // timer (virus creation)
         this.timer = false
 
-        // an object to store visual objects  (fab -> fabric.js)
+        // an object to store visual objects (fabric.js)
         this.fab = {}
         this.fab.ring = false
         this.fab.cell = false
-        this.line = false
 
-        // visual stuff
+        // line
+        this.line = false
+        this.line = new Line(this.x, this.y, this.r)
+
+        // fabric js visual stuff
         fabric.loadSVGFromURL('../img/cell.svg', (objects) => {
             objects[13].set({ // font size control
                 fontSize: Math.round(Math.max(40, 20 / this.scale)),
@@ -79,14 +82,16 @@ class Cell {
 
             Game.canvas.add(this.fab.ring)
             Game.canvas.add(this.fab.cell)
+            
         })
-        this.line = new Line(this.x, this.y, this.r)
 
         // start creating
         this.settimer()
     }
 
+    //
     // virus transportation
+    //
 
     send(id) {
         if (this.id == id) return false // cell's can't be able to send to themselves
@@ -95,7 +100,7 @@ class Cell {
             v = viruses[v]
             v.x = this.x + (Math.random() * 20) - (Math.random() * 20)
             v.y = this.y + (Math.random() * 20) - (Math.random() * 20)
-            v.march(id)
+            v.dispatch(id)
         }
         this.fab.cell.paths[13].set({
             text: this.viruses.length + ''
@@ -123,7 +128,9 @@ class Cell {
         })
     }
 
+    // 
     // timing 
+    //
 
     settimer() {
         if (!this.playerid) return false // only owned cells produce viruses
@@ -153,7 +160,9 @@ class Cell {
         this.settimer()
     }
 
+    //
     // hover effects
+    //
 
     hover() {
         this.fab.ring.set({
@@ -169,28 +178,18 @@ class Cell {
 
     }
 
-    // line stuff
-    showline() {
-        return this.line.show()
-    }
-
-    hideline() {
-        return this.line.hide()
-    }
-
-    updateline(cell, x, y) {
-        return this.line.update(cell, x, y)
-    }
-
+    //
     // gravity and repultion
+    //
+
     attract(virus) {
         let dx = Math.abs(parseFloat(virus.x - this.x))
         let dy = Math.abs(parseFloat(virus.y - this.y))
         let modifyx = this.gravity.k * dx
         let modifyy = this.gravity.k * dy
         virus.equations.push({
-            dx: Math.round((virus.x > this.x ? -modifyx : modifyx)* 6) / 6,
-            dy: Math.round((virus.y > this.y ? -modifyy : modifyy)* 6) / 6
+            dx: Math.round((virus.x > this.x ? -modifyx : modifyx) * 6) / 6,
+            dy: Math.round((virus.y > this.y ? -modifyy : modifyy) * 6) / 6
         })
     }
 
@@ -212,8 +211,8 @@ class Cell {
             equation.y = virus.y > this.y ? equation.y : -equation.y
 
             virus.equations.push({
-                dx: Math.round(equation.x* 6) / 6,
-                dy: Math.round(equation.y* 6) / 6
+                dx: Math.round(equation.x * 6) / 6,
+                dy: Math.round(equation.y * 6) / 6
             })
 
         }

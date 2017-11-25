@@ -1,5 +1,23 @@
 class Line {
 
+    constructor(x, y, r) { // x and y are cell's
+
+        this.x = x
+        this.y = y
+        this.r = r
+
+        // an object to store visual objects  (fabric.js)
+        this.fab = {}
+        this.fab.line = new fabric.Line([this.x, this.y, this.x, this.y], {
+            strokeWidth: 2,
+            stroke: '#aaa'
+        })
+        Game.canvas.add(this.fab.line)
+
+    }
+
+    // edge finder for circles
+
     _edge(x, y, xc, yc, r) {
         let m = (y - yc) / (x - xc)
         r += 5
@@ -12,39 +30,28 @@ class Line {
         }
     }
 
-
-    constructor(x, y, r) { // x and y are cell's
-
-        this.x = x
-        this.y = y
-        this.r = r
-
-        // an object to store visual objects  (fab -> fabric.js)
-        this.fab = {}
-        this.fab.line = new fabric.Line([this.x, this.y, this.x, this.y], {
-            strokeWidth: 2,
-            stroke: '#aaa'
-        })
-        Game.canvas.add(this.fab.line)
-
-    }
-
+    //
+    // visibility
+    //
 
     show() {
         this.fab.line.set({
             strokeWidth: 2
         })
-        
     }
 
     hide() {
         this.fab.line.set({
             strokeWidth: 0
         })
-        
     }
 
-    update(cell, x, y) {
+
+    //
+    // position
+    //
+
+    pos(cell, x, y) {
 
         let p1 = false,
             p2 = false
@@ -61,7 +68,7 @@ class Line {
             x2: p2 ? p2.x : x,
             y2: p2 ? p2.y : y
         })
-        
+
 
     }
 
