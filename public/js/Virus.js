@@ -79,7 +79,7 @@ class Virus {
 
     // movement calculations
 
-    dispatch(targetid) {
+    launch(targetid) {
         this.show()
         this.target = Game.cells[targetid]
         this.obstacles = []

@@ -100,7 +100,7 @@ class Cell {
             v = viruses[v]
             v.x = this.x + (Math.random() * 20) - (Math.random() * 20)
             v.y = this.y + (Math.random() * 20) - (Math.random() * 20)
-            v.dispatch(id)
+            v.launch(id)
         }
         this.fab.cell.paths[13].set({
             text: this.viruses.length + ''
