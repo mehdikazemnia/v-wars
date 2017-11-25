@@ -32,8 +32,17 @@ window.Game = {
 
         // fetching the canvas for fabric js
         this.canvas = new fabric.Canvas('canvas', {
-            selection: false
+            renderOnAddRemove: false,
+            preserveObjectStacking: true,
+            targetFindTolerance: 4,
+            perPixelTargetFind: true,
+            skipOffscreen: true,
+            selection: false,
+            stateful: false, 
+            skipTargetFind: false
         })
+
+    
 
         // fetching players
         for (let p of Map.players) {
