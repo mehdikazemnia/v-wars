@@ -39,7 +39,9 @@ class Virus {
             left: this.x,
             top: this.y,
             radius: 0,
-            fill: this.color
+            fill: this.color,
+            // strokeWidth: 3,
+            // stroke: 'rgba(0,0,0,.5)'
         })
         Game.canvas.add(this.fab.virus)
 
@@ -49,13 +51,15 @@ class Virus {
 
     show() {
         this.fab.virus.set({
-            radius: 4
+            radius: 4,
+            // strokeWidth: 3
         })
     }
 
     hide() {
         this.fab.virus.set({
-            radius: 0
+            radius: 0,
+            // strokeWidth: 0  
         })
     }
 
