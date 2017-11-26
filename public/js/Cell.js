@@ -198,19 +198,18 @@ class Cell {
 
     repulse(x, y) {
 
-        let dx = Math.abs(x - this.x)
-        let dy = Math.abs(y - this.y)
+        let dx = x - this.x
+        let dy = y - this.y
 
         if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in range
-            let distance = Math.abs(Math.sqrt((dx * dx) + (dy * dy))) - this.r * .6
+            
+            let distance = Math.sqrt((dx * dx) + (dy * dy))
+
             let F = this.repultion.k / (distance * distance)
 
-            let fx = (dx / distance) * F
-            let fy = (dy / distance) * F
-
             let force = {
-                dx: Math.round((x > this.x ? fx : -fx) * 6) / 6,
-                dy: Math.round((y > this.y ? fy : -fy) * 6) / 6
+                dx: (dx / distance) * F,
+                dy: (dy / distance) * F
             }
 
             return force
