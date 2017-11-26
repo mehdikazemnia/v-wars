@@ -181,15 +181,12 @@ class Cell {
 
     attract(x, y) {
 
-        let dx = Math.abs(x - this.x)
-        let dy = Math.abs(y - this.y)
-
-        let fx = this.gravity.k * dx
-        let fy = this.gravity.k * dy
+        let dx = x - this.x
+        let dy = y - this.y
 
         let force = {
-            dx: Math.round((x > this.x ? -fx : fx) * 6) / 6,
-            dy: Math.round((y > this.y ? -fy : fy) * 6) / 6
+            dx: -(this.gravity.k * dx),
+            dy: -(this.gravity.k * dy)
         }
 
         return force
@@ -202,7 +199,7 @@ class Cell {
         let dy = y - this.y
 
         if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in range
-            
+
             let distance = Math.sqrt((dx * dx) + (dy * dy))
 
             let F = this.repultion.k / (distance * distance)
