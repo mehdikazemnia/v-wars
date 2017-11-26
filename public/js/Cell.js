@@ -22,7 +22,6 @@ class Cell {
         this.scale = this.scale / 200
         this.r = 100 * this.scale
 
-
         // appending viruses
         for (let i = 0; i < info.population; i++) {
             let p = new Virus(this.x, this.y, this.id, this.playerid)
@@ -34,8 +33,8 @@ class Cell {
             k: 10
         }
         this.repultion = {
-            k: 100000, // amount of power then repulsing 
-            margin: this.r + 30
+            k: 300000, // amount of power then repulsing     
+            margin: this.r + 60
         }
 
         // timer (virus creation)
@@ -82,7 +81,7 @@ class Cell {
 
             Game.canvas.add(this.fab.ring)
             Game.canvas.add(this.fab.cell)
-            
+
         })
 
         // start creating
@@ -168,54 +167,55 @@ class Cell {
         this.fab.ring.set({
             opacity: 1
         })
-
     }
 
     unhover() {
         this.fab.ring.set({
             opacity: 0
         })
-
     }
 
     //
     // gravity and repultion
     //
 
-    attract(virus) {
-        let dx = Math.abs(parseFloat(virus.x - this.x))
-        let dy = Math.abs(parseFloat(virus.y - this.y))
-        let modifyx = this.gravity.k * dx
-        let modifyy = this.gravity.k * dy
-        virus.equations.push({
-            dx: Math.round((virus.x > this.x ? -modifyx : modifyx) * 6) / 6,
-            dy: Math.round((virus.y > this.y ? -modifyy : modifyy) * 6) / 6
-        })
+    attract(x, y) {
+
+        let dx = Math.abs(x - this.x)
+        let dy = Math.abs(y - this.y)
+
+        let fx = this.gravity.k * dx
+        let fy = this.gravity.k * dy
+
+        let force = {
+            dx: Math.round((x > this.x ? -fx : fx) * 6) / 6,
+            dy: Math.round((y > this.y ? -fy : fy) * 6) / 6
+        }
+
+        return force
+
     }
 
-    repulse(virus) {
+    repulse(x, y) {
 
-        let dx = Math.abs(virus.x - this.x)
-        let dy = Math.abs(virus.y - this.y)
+        let dx = Math.abs(x - this.x)
+        let dy = Math.abs(y - this.y)
 
         if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in range
             let distance = Math.abs(Math.sqrt((dx * dx) + (dy * dy))) - this.r * .6
             let F = this.repultion.k / (distance * distance)
 
-            let equation = {
-                x: (dx / distance) * F,
-                y: (dy / distance) * F
+            let fx = (dx / distance) * F
+            let fy = (dy / distance) * F
+
+            let force = {
+                dx: Math.round((x > this.x ? fx : -fx) * 6) / 6,
+                dy: Math.round((y > this.y ? fy : -fy) * 6) / 6
             }
 
-            equation.x = virus.x > this.x ? equation.x : -equation.x
-            equation.y = virus.y > this.y ? equation.y : -equation.y
-
-            virus.equations.push({
-                dx: Math.round(equation.x * 6) / 6,
-                dy: Math.round(equation.y * 6) / 6
-            })
-
+            return force
         }
+        return false
 
     }
 

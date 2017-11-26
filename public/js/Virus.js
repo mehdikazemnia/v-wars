@@ -16,14 +16,14 @@ class Virus {
         this.playerid = playerid
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
-        // equations and movements
-        this.equations = [] // equations[i] = { dx, dy }
+        // forces and movements
+        this.forces = [] // forces[i] = { dx, dy }
         this.equation = {
             dx: 0,
             dy: 0
         }
+        this.animation = false
         this.movement = {
-            animation: false,
             step: 3,
             time: .02
         }
@@ -98,33 +98,37 @@ class Virus {
 
     step() {
 
-        // resetting the equations
-        this.equations = []
+        // resetting the forces and sight point
+        this.forces = []
         this.equation = {
             dx: 0,
             dy: 0
         }
 
         // attract equation
-        this.target.attract(this)
+        this.forces.push(this.target.attract(this.x, this.y))
 
-        // repulse equations
+        // repulse forces
         for (let o in this.obstacles) {
-            this.obstacles[o].repulse(this)
+            let f = this.obstacles[o].repulse(this.x, this.y)
+            f ? this.forces.push(f) : null
         }
 
         // calculating the final equation
-        for (let e in this.equations) {
-            e = this.equations[e]
-            this.equation.dx += e.dx
-            this.equation.dy += e.dy
+        for (let f in this.forces) {
+            f = this.forces[f]
+            this.equation.dx += f.dx
+            this.equation.dy += f.dy
         }
 
-        // modify the equation by step
+        // modify the sight point changes by step
         let m = this.equation.dy / this.equation.dx
         let dx = Math.sqrt((this.movement.step * this.movement.step) / ((m * m) + 1))
         if (this.equation.dx < 0) dx = -dx
         let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.movement.step : -this.movement.step
+
+        // rewrite the equation
+        this.equation = {}
 
         // step animation
         this.movement.animation = new TweenMax(this, this.movement.time, {
