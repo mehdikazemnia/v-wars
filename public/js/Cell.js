@@ -29,12 +29,10 @@ class Cell {
         }
 
         // gravity and repultion
-        this.gravity = {
-            k: 10
-        }
+        this.gravity = 10
         this.repultion = {
-            k: 300000, // amount of power then repulsing     
-            margin: this.r + 60
+            k: 40000, // amount of power then repulsing     
+            margin: this.r * 1.2
         }
 
         // timer (virus creation)
@@ -181,12 +179,15 @@ class Cell {
 
     attract(x, y) {
 
-        let dx = x - this.x
-        let dy = y - this.y
+        let m = (y - this.y) / (x - this.x)
+
+        let dx = Math.sqrt((this.gravity * this.gravity) / ((m * m) + 1))
+        if (this.x < x) dx = -dx
+        let dy = (dx != 0) ? dx * m : (this.y < y) ? this.gravity : -this.gravity
 
         let force = {
-            dx: -(this.gravity.k * dx),
-            dy: -(this.gravity.k * dy)
+            dx: dx,
+            dy: dy
         }
 
         return force
