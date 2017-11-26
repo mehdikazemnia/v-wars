@@ -16,8 +16,7 @@ class Virus {
         this.playerid = playerid
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
-        // forces and movements
-        this.forces = [] // forces[i] = { dx, dy }
+        // equation and movements
         this.equation = {
             dx: 0,
             dy: 0
@@ -98,28 +97,20 @@ class Virus {
 
     step() {
 
-        // resetting the forces and sight point
-        this.forces = []
-        this.equation = {
-            dx: 0,
-            dy: 0
-        }
-
         // attract equation
-        this.forces.push(this.target.attract(this.x, this.y))
+        this.equation = this.target.attract(this.x, this.y)
 
         // repulse forces
         for (let o in this.obstacles) {
             let f = this.obstacles[o].repulse(this.x, this.y)
-            f ? this.forces.push(f) : null
+            if (f) {
+                this.equation.dx += f.dx
+                this.equation.dy += f.dy
+            }
         }
 
-        // calculating the final equation
-        for (let f in this.forces) {
-            f = this.forces[f]
-            this.equation.dx += f.dx
-            this.equation.dy += f.dy
-        }
+        console.log(this.equation)
+
 
         // modify the sight point changes by step
         let m = this.equation.dy / this.equation.dx
