@@ -7,22 +7,22 @@ class Virus {
 
     constructor(x, y, cellid, playerid) {
 
-        // positions
-        this.x = x
-        this.y = y
-
         // place and owner
         this.cellid = cellid
         this.playerid = playerid
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
+
         // equation and movements
-        this.animation = false  
+        this.x = x
+        this.y = y
+        this.animation = false
         this.pace = 3 // px / 0.02 sec        
         this.equation = {
             dx: 0,
             dy: 0
         }
+
 
         // target and obstacles
         this.target = {}
@@ -99,23 +99,20 @@ class Virus {
 
         // repulse forces
         for (let o in this.obstacles) {
-            let f = this.obstacles[o].repulse(this.x, this.y)
+            let f = this.obstacles[o].repulse(this.x, this.y, this.equation.dy / this.equation.dx)
             if (f) {
                 this.equation.dx += f.dx
                 this.equation.dy += f.dy
             }
         }
 
-        console.log(this.equation)
-
-
-        // modify the sight point changes by step
+        // calculate the final dx and dy normalized by pace
         let m = this.equation.dy / this.equation.dx
         let dx = Math.sqrt((this.pace * this.pace) / ((m * m) + 1))
         if (this.equation.dx < 0) dx = -dx
         let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
-        // rewrite the equation
+        // reset the equation
         this.equation = {}
 
         // step animation
