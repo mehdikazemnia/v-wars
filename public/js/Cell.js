@@ -31,7 +31,7 @@ class Cell {
         // gravity and repultion
         this.gravity = 10
         this.repultion = {
-            k: 10000, // amount of power then repulsing     
+            k: 7000, // amount of power then repulsing     
             margin: this.r * 1.2
         }
 
@@ -194,8 +194,7 @@ class Cell {
 
     }
 
-    repulse(x, y) {
-
+    repulse(x, y, m) {
         let dx = x - this.x
         let dy = y - this.y
 
@@ -203,11 +202,19 @@ class Cell {
 
             let distance = Math.sqrt((dx * dx) + (dy * dy))
 
-            let F = this.repultion.k / (distance * distance)
+            // *****************
+            let xp = (this.x - (m * y) + (m * m * x) + (m * this.y)) / ((m * m) + 1)
+            let dxp = xp - this.x
+            let dyp = dxp * (-1 / m)
+            let yp = this.y + dyp
+            let distancep = Math.sqrt((dxp * dxp) + (dyp * dyp))
+            // *****************
+
+            let F = this.repultion.k / (distancep * distancep)
 
             let force = {
-                dx: (dx / distance) * F,
-                dy: (dy / distance) * F
+                dx: (dxp / distancep) * F,
+                dy: (dyp / distancep) * F
             }
 
             return force
