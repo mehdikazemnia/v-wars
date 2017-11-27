@@ -17,14 +17,11 @@ class Virus {
         this.color = Game.players[this.playerid] ? Game.players[this.playerid].color : '#888'
 
         // equation and movements
+        this.animation = false  
+        this.pace = 3 // px / 0.02 sec        
         this.equation = {
             dx: 0,
             dy: 0
-        }
-        this.animation = false
-        this.movement = {
-            step: 3,
-            time: .02
         }
 
         // target and obstacles
@@ -114,15 +111,15 @@ class Virus {
 
         // modify the sight point changes by step
         let m = this.equation.dy / this.equation.dx
-        let dx = Math.sqrt((this.movement.step * this.movement.step) / ((m * m) + 1))
+        let dx = Math.sqrt((this.pace * this.pace) / ((m * m) + 1))
         if (this.equation.dx < 0) dx = -dx
-        let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.movement.step : -this.movement.step
+        let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
         // rewrite the equation
         this.equation = {}
 
         // step animation
-        this.movement.animation = new TweenMax(this, this.movement.time, {
+        this.animation = new TweenMax(this, .02, {
             x: this.x + dx,
             y: this.y + dy,
             ease: Power0.easeNone,
@@ -130,7 +127,7 @@ class Virus {
                 if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
                     this.renderpos()
                 } else {
-                    this.movement.animation.pause()
+                    this.animation.pause()
                     this.land()
                 }
             },
