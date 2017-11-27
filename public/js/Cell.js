@@ -31,7 +31,7 @@ class Cell {
         // gravity and repultion
         this.gravity = 10
         this.repultion = {
-            k: 40000, // amount of power then repulsing     
+            k: 10000, // amount of power then repulsing     
             margin: this.r * 1.2
         }
 
