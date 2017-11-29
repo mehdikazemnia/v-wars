@@ -1,9 +1,9 @@
 import {
-    TweenMax
+    TweenLite,
 } from 'gsap'
 
-class Virus {
 
+class Virus {
 
     constructor(x, y, cellid, playerid) {
 
@@ -16,7 +16,7 @@ class Virus {
         // equation and movements
         this.x = x
         this.y = y
-        this.pace = 1 // px / 0.02 sec        
+        this.pace = 100 // steps per second
         this.equation = {
             dx: 0,
             dy: 0
@@ -82,16 +82,17 @@ class Virus {
         this.show()
         this.target = Game.cells[targetid]
         this.obstacles = []
+        this.path = []
 
         for (let c in Game.cells) {
             if (c == targetid || c == this.cellid) continue
             this.obstacles.push(Game.cells[c])
         }
 
-        this.step()
+        this.findpath()
     }
 
-    step() {
+    findpath() {
 
         // attract equation
         this.equation = this.target.attract(this.x, this.y)
@@ -107,22 +108,48 @@ class Virus {
 
         // calculate the final dx and dy normalized by pace
         let m = this.equation.dy / this.equation.dx
-        let dx = Math.sqrt((this.pace * this.pace) / ((m * m) + 1))
+        let dx = Math.sqrt((1 / ((m * m) + 1)))
         if (this.equation.dx < 0) dx = -dx
         let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
         // step animation
         if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
-            setTimeout(() => {
-                this.x += dx
-                this.y += dy
-                this.renderpos()
-                this.equation = {}
-                this.step()
-            }, 10)
+            this.x += dx
+            this.y += dy
+            this.path.push([Math.round(this.x), Math.round(this.y)])
+            this.equation = {}
+            this.findpath()
         } else {
-            this.land()
+            this.step()
         }
+
+    }
+
+    step() {
+
+        let step = this.path.splice(0, this.pace)
+
+        let counter = {
+            i: 0
+        }
+
+        TweenLite.to(counter, step.length / this.pace, {
+            ease: Power1.easeOut,
+            i: step.length - 1,
+            onUpdate: () => {
+                let s = step[Math.round(counter.i)]
+                this.x = s[0]
+                this.y = s[1]
+                this.renderpos()
+            },
+            onComplete: () => {
+                if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
+                    this.step()
+                } else {
+                    this.land()
+                }
+            }
+        });
     }
 
 
