@@ -94,34 +94,34 @@ class Virus {
 
     findpath() {
 
-        // attract equation
-        this.equation = this.target.attract(this.x, this.y)
+        while (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
 
-        // repulse forces
-        for (let o in this.obstacles) {
-            let f = this.obstacles[o].repulse(this.x, this.y, this.equation.dy / this.equation.dx)
-            if (f) {
-                this.equation.dx += f.dx
-                this.equation.dy += f.dy
+            // attract equation
+            this.equation = this.target.attract(this.x, this.y)
+
+            // repulse forces
+            for (let o in this.obstacles) {
+                let f = this.obstacles[o].repulse(this.x, this.y, this.equation.dy / this.equation.dx)
+                if (f) {
+                    this.equation.dx += f.dx
+                    this.equation.dy += f.dy
+                }
             }
-        }
 
-        // calculate the final dx and dy normalized by pace
-        let m = this.equation.dy / this.equation.dx
-        let dx = Math.sqrt((1 / ((m * m) + 1)))
-        if (this.equation.dx < 0) dx = -dx
-        let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
+            // calculate the final dx and dy normalized by pace
+            let m = this.equation.dy / this.equation.dx
+            let dx = Math.sqrt((1 / ((m * m) + 1)))
+            if (this.equation.dx < 0) dx = -dx
+            let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
-        // step animation
-        if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
             this.x += dx
             this.y += dy
             this.path.push([Math.round(this.x), Math.round(this.y)])
             this.equation = {}
-            this.findpath()
-        } else {
-            this.step()
+
         }
+
+        this.step()
 
     }
 
