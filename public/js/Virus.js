@@ -16,8 +16,7 @@ class Virus {
         // equation and movements
         this.x = x
         this.y = y
-        this.animation = false
-        this.pace = 3 // px / 0.02 sec        
+        this.pace = 1 // px / 0.02 sec        
         this.equation = {
             dx: 0,
             dy: 0
@@ -112,29 +111,18 @@ class Virus {
         if (this.equation.dx < 0) dx = -dx
         let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
-        // reset the equation
-        this.equation = {}
-
         // step animation
-        this.animation = new TweenMax(this, .02, {
-            x: this.x + dx,
-            y: this.y + dy,
-            ease: Power0.easeNone,
-            onUpdate: () => {
-                if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
-                    this.renderpos()
-                } else {
-                    this.animation.pause()
-                    this.land()
-                }
-            },
-            onComplete: () => {
-                if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
-                    this.step()
-                }
-            }
-        })
-
+        if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
+            setTimeout(() => {
+                this.x += dx
+                this.y += dy
+                this.renderpos()
+                this.equation = {}
+                this.step()
+            }, 10)
+        } else {
+            this.land()
+        }
     }
 
 
