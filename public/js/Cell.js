@@ -21,7 +21,6 @@ class Cell {
         this.scale = (this.capacity > 150) ? 200 : (this.capacity > 100) ? 150 : (this.capacity > 50) ? 100 : (this.capacity > 0) ? 50 : null;
         this.scale = this.scale / 200
         this.r = 100 * this.scale
-        this.mass = Math.round(this.r * this.r * Math.PI * .0005)
 
         // appending viruses
         for (let i = 0; i < info.population; i++) {
@@ -32,8 +31,8 @@ class Cell {
         // gravity and repultion
         this.gravity = 10
         this.repultion = {
-            k: 500, // amount of power then repulsing     
-            margin: this.r * 1.2
+            k: Math.round(this.r * this.r * Math.PI * 80), // amount of power then repulsing     
+            margin: this.r * 1.5
         }
 
         // timer (virus creation)
@@ -199,29 +198,26 @@ class Cell {
         let dx = x - this.x
         let dy = y - this.y
 
-        if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in range
+        if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in danger range
 
-            let distance = Math.sqrt((dx * dx) + (dy * dy))
-
-            // *****************
             let xp = (this.x - (m * y) + (m * m * x) + (m * this.y)) / ((m * m) + 1)
             let dxp = xp - this.x
             let dyp = dxp * (-1 / m)
             let yp = this.y + dyp
+
+            let distance = Math.sqrt((dx * dx) + (dy * dy))
             let distancep = Math.sqrt((dxp * dxp) + (dyp * dyp))
-            // *****************
 
-            let F = this.repultion.k * this.mass / (distancep * distancep)
-
-            let force = {
-                dx: (dxp / distancep) * F,
-                dy: (dyp / distancep) * F
+            if (distancep < this.r) {
+                let F = this.repultion.k / (distancep * distancep)
+                let force = {
+                    dx: ((dxp / distancep) * F) / distance,
+                    dy: ((dyp / distancep) * F) / distance
+                }
+                return force
             }
-
-            return force
         }
         return false
-
     }
 
 }
