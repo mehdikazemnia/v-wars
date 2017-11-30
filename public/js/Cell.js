@@ -95,8 +95,8 @@ class Cell {
         let viruses = this.viruses.splice(0, Math.floor(this.viruses.length / 2))
         for (let v in viruses) {
             v = viruses[v]
-            v.x = this.x + (Math.random() * 20) - (Math.random() * 20)
-            v.y = this.y + (Math.random() * 20) - (Math.random() * 20)
+            v.x = this.x + (Math.random() * this.r) - (Math.random() * this.r)
+            v.y = this.y + (Math.random() * this.r) - (Math.random() * this.r)
             v.launch(id)
         }
         this.fab.cell.paths[13].set({
