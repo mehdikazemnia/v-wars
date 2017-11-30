@@ -16,7 +16,7 @@ class Virus {
         // equation and movements
         this.x = x
         this.y = y
-        this.pace = 100 // steps per second
+        this.pace = 60 // steps per second
         this.equation = {
             dx: 0,
             dy: 0
@@ -110,13 +110,13 @@ class Virus {
 
             // calculate the final dx and dy normalized by pace
             let m = this.equation.dy / this.equation.dx
-            let dx = Math.sqrt((1 / ((m * m) + 1)))
+            let dx = Math.sqrt((3 / ((m * m) + 1)))
             if (this.equation.dx < 0) dx = -dx
             let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
             this.x += dx
             this.y += dy
-            this.path.push([Math.round(this.x), Math.round(this.y)])
+            this.path.push([this.x, this.y])
             this.equation = {}
 
         }
