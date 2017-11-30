@@ -94,7 +94,7 @@ class Virus {
 
     findpath() {
 
-        while (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
+        while (Math.pow(this.x - this.target.x, 2) + Math.pow(this.y - this.target.y, 2) > Math.pow(this.target.r, 2)) {
 
             // attract equation
             this.equation = this.target.attract(this.x, this.y)
@@ -143,7 +143,7 @@ class Virus {
                 this.renderpos()
             },
             onComplete: () => {
-                if (Math.abs(this.x - this.target.x) > this.target.r || Math.abs(this.y - this.target.y) > this.target.r) {
+                if (this.path.length > 5) {
                     this.step()
                 } else {
                     this.land()
