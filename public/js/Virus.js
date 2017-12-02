@@ -82,31 +82,47 @@ class Virus {
         this.show()
         this.target = Game.cells[targetid]
         this.obstacles = []
-        this.path = []
 
         for (let c in Game.cells) {
             if (c == targetid || c == this.cellid) continue
             this.obstacles.push(Game.cells[c])
         }
 
-        this.findpath()
+        this.stepper()
     }
 
-    findpath() {
+    stepper() {
+        let i = 0
+        let steps = []
 
-        while (Math.pow(this.x - this.target.x, 2) + Math.pow(this.y - this.target.y, 2) > Math.pow(this.target.r, 2)) {
+        while (Math.pow(this.x - this.target.x, 2) + Math.pow(this.y - this.target.y, 2) > Math.pow(this.target.r, 2) && i < this.pace) {
+
+            i++
 
             // attract equation
-            this.equation = this.target.attract(this.x, this.y)
+            let eq = this.target.attract(this.x, this.y) // the new  equation
 
             // repulse forces
             for (let o in this.obstacles) {
                 let f = this.obstacles[o].repulse(this.x, this.y, this.equation.dy / this.equation.dx)
                 if (f) {
-                    this.equation.dx += f.dx
-                    this.equation.dy += f.dy
+                    eq.dx += f.dx
+                    eq.dy += f.dy
                 }
             }
+
+            // turncate sudden changes in the final equation
+
+            let diff = {
+                dx: eq.dx - this.equation.dx,
+                dy: eq.dy - this.equation.dy
+            }
+            if (Math.abs(diff.dx) > 200) diff.dx = diff.dx > 0 ? 200 : -200
+            if (Math.abs(diff.dy) > 200) diff.dx = diff.dx > 0 ? 200 : -200
+
+            this.equation.dx += diff.dx
+            this.equation.dy += diff.dy
+
 
             // calculate the final dx and dy normalized by pace
             let m = this.equation.dy / this.equation.dx
@@ -116,42 +132,34 @@ class Virus {
 
             this.x += dx
             this.y += dy
-            this.path.push([this.x, this.y])
-            this.equation = {}
+            steps.push([this.x, this.y])
 
         }
-
-        this.step()
-
-    }
-
-    step() {
-
-        let step = this.path.splice(0, this.pace)
 
         let counter = {
             i: 0
         }
+        let len = steps.length
 
-        TweenLite.to(counter, step.length / this.pace, {
-            ease: Power1.easeOut,
-            i: step.length - 1,
-            onUpdate: () => {
-                let s = step[Math.round(counter.i)]
-                this.x = s[0]
-                this.y = s[1]
-                this.renderpos()
-            },
-            onComplete: () => {
-                if (this.path.length > 5) {
-                    this.step()
-                } else {
-                    this.land()
+        if (len > 5) { // not close enough
+            TweenLite.to(counter, len / this.pace, {
+                ease: Power1.easeOut,
+                i: len - 1,
+                onUpdate: () => {
+                    let s = steps[Math.round(counter.i)]
+                    this.x = s[0]
+                    this.y = s[1]
+                    this.renderpos()
+                },
+                onComplete: () => {
+                    this.stepper()
                 }
-            }
-        });
+            })
+        } else { // close enough
+            this.land()
+        }
+        
     }
-
 
 
 }
