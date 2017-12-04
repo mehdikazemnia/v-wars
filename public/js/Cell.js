@@ -198,7 +198,7 @@ class Cell {
         let dx = x - this.x
         let dy = y - this.y
 
-        if (this.repultion.margin > Math.abs(dx) && this.repultion.margin > Math.abs(dy)) { // in danger range
+        if (this.repultion.margin > Math.sqrt(dx*dx + dy*dy)) { // in danger range
 
             let xp = (this.x - (m * y) + (m * m * x) + (m * this.y)) / ((m * m) + 1)
             let dxp = xp - this.x
