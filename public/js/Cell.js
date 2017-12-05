@@ -31,7 +31,7 @@ class Cell {
         // gravity and repultion
         this.gravity = 10
         this.repultion = {
-            k: Math.round(this.r * this.r * Math.PI * 70), // amount of power then repulsing     
+            k: 50, // amount of power then repulsing     
             margin: this.r * 1.5
         }
 
@@ -195,25 +195,40 @@ class Cell {
     }
 
     repulse(x, y, m) {
+
         let dx = x - this.x
         let dy = y - this.y
+        let distance = Math.sqrt(dx * dx + dy * dy)
 
-        if (this.repultion.margin > Math.sqrt(dx*dx + dy*dy)) { // in danger range
+        if (this.repultion.margin > distance) { // in danger range
 
+            let m2 = -1 / m
+
+            // the closest point virus is going to get to cell
             let xp = (this.x - (m * y) + (m * m * x) + (m * this.y)) / ((m * m) + 1)
             let dxp = xp - this.x
             let dyp = dxp * (-1 / m)
             let yp = this.y + dyp
+            let p = Math.sqrt((dxp * dxp) + (dyp * dyp))
 
-            let distance = Math.sqrt((dx * dx) + (dy * dy))
-            let distancep = Math.sqrt((dxp * dxp) + (dyp * dyp))
+            if (p < this.r) {
 
-            if (distancep < this.r) {
-                let F = this.repultion.k / (distancep * distancep)
+                // the edge on cell we want the virus to be
+                let dxe = Math.sqrt((this.r * this.r) / (1 + m2 * m2))
+                dxe = (xp < this.x) ? -dxe : dxe
+                let dye = dxe * m2
+                let xe = this.x + dxe
+                let ye = this.y + dye
+
+                // the force
+                let xf = xe - xp
+                let yf = ye - yp
+
                 let force = {
-                    dx: ((dxp / distancep * F) / distance),
-                    dy: ((dyp / distancep * F) / distance)
+                    dx: (xf * this.repultion.k)/distance,
+                    dy: (yf * this.repultion.k)/distance
                 }
+
                 return force
             }
         }
