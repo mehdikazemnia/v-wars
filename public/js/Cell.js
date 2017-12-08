@@ -32,7 +32,8 @@ class Cell {
         this.gravity = 10
         this.repultion = {
             k: 50, // amount of power then repulsing     
-            margin: this.r * 1.5
+            margin1: this.r + 10,
+            margin2: Math.max(this.r * 1.5, this.r + 20)
         }
 
         // timer (virus creation)
@@ -186,8 +187,8 @@ class Cell {
         let dy = (dx != 0) ? dx * m : (this.y < y) ? this.gravity : -this.gravity
 
         let force = {
-            dx: dx,
-            dy: dy
+            dx: dx.toFixed(5) / 1,
+            dy: dy.toFixed(5) / 1
         }
 
         return force
@@ -200,7 +201,7 @@ class Cell {
         let dy = y - this.y
         let distance = Math.sqrt(dx * dx + dy * dy)
 
-        if (this.repultion.margin > distance) { // in danger range
+        if (this.repultion.margin2 > distance) { // in danger range
 
             let m2 = -1 / m
 
@@ -211,10 +212,10 @@ class Cell {
             let yp = this.y + dyp
             let p = Math.sqrt((dxp * dxp) + (dyp * dyp))
 
-            if (p < this.r) {
+            if (p < this.repultion.margin1) {
 
                 // the edge on cell we want the virus to be
-                let dxe = Math.sqrt((this.r * this.r) / (1 + m2 * m2))
+                let dxe = Math.sqrt((this.repultion.margin1 * this.repultion.margin1) / (1 + m2 * m2))
                 dxe = (xp < this.x) ? -dxe : dxe
                 let dye = dxe * m2
                 let xe = this.x + dxe
@@ -225,9 +226,10 @@ class Cell {
                 let yf = ye - yp
 
                 let force = {
-                    dx: (xf * this.repultion.k)/distance,
-                    dy: (yf * this.repultion.k)/distance
+                    dx: ((xf * this.repultion.k) / distance).toFixed(5) / 1,
+                    dy: ((yf * this.repultion.k) / distance).toFixed(5) / 1
                 }
+                // console.log(force)
 
                 return force
             }
