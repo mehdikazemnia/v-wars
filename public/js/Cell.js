@@ -31,9 +31,9 @@ class Cell {
         // gravity and repultion
         this.gravity = 10
         this.repultion = {
-            k: 50, // amount of power then repulsing     
+            k: 20, // amount of power then repulsing     
             margin1: this.r + 5,
-            margin2: Math.max(this.r * 1.5, this.r + 20)
+            margin2: Math.max(this.r * 2, this.r + 20)
         }
 
         // timer (virus creation)
