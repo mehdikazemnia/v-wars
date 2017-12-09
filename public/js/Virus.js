@@ -16,7 +16,7 @@ class Virus {
         // equation and movements
         this.x = x
         this.y = y
-        this.pace = 60 // steps per second
+        this.pace = 100 // steps per second
         this.equation = {
             dx: 0,
             dy: 0
@@ -38,6 +38,16 @@ class Virus {
             // strokeWidth: 3,
             // stroke: 'rgba(0,0,0,.5)'
         })
+        this.fab.seekline = new fabric.Line([this.x, this.y, this.x, this.y], {
+            opacity: 0,
+            stroke: '#a0a'
+        })
+        this.fab.avoidline = new fabric.Line([this.x, this.y, this.x, this.y], {
+            opacity: 0,
+            stroke: '#0a0'
+        })
+        Game.canvas.add(this.fab.seekline)
+        Game.canvas.add(this.fab.avoidline)
         Game.canvas.add(this.fab.virus)
 
     }
@@ -49,12 +59,24 @@ class Virus {
             radius: 4,
             // strokeWidth: 3
         })
+        this.fab.seekline.set({
+            opacity: 1
+        })
+        this.fab.avoidline.set({
+            opacity: 1
+        })
     }
 
     hide() {
         this.fab.virus.set({
             radius: 0,
             // strokeWidth: 0  
+        })
+        this.fab.seekline.set({
+            opacity: 0
+        })
+        this.fab.avoidline.set({
+            opacity: 0
         })
     }
 
@@ -100,39 +122,38 @@ class Virus {
             i++
 
             // attract equation
-            let eq = this.target.attract(this.x, this.y) // the new  equation
+            let seek = this.target.attract(this.x, this.y) // the new  equation
+            let avoid = {
+                dx: 0,
+                dy: 0
+            }
 
             // repulse forces
             for (let o in this.obstacles) {
-                let f = this.obstacles[o].repulse(this.x, this.y, this.equation.dy / this.equation.dx)
+                let f = this.obstacles[o].repulse(this.x, this.y, seek.dy / seek.dx)
                 if (f) {
-                    eq.dx += f.dx
-                    eq.dy += f.dy
+                    avoid.dx += f.dx
+                    avoid.dy += f.dy
                 }
             }
 
-            // turncate sudden changes in the final equation
+            // ----
+            // TODO: turncate sudden changes
+            // ----
 
-            let diff = {
-                dx: eq.dx - this.equation.dx,
-                dy: eq.dy - this.equation.dy
-            }
-            if (Math.abs(diff.dx) > 200) diff.dx = diff.dx > 0 ? 200 : -200
-            if (Math.abs(diff.dy) > 200) diff.dx = diff.dx > 0 ? 200 : -200
-
-            this.equation.dx += diff.dx
-            this.equation.dy += diff.dy
+            this.equation.dx = seek.dx + avoid.dx
+            this.equation.dy = seek.dy + avoid.dy
 
 
             // calculate the final dx and dy normalized by pace
             let m = this.equation.dy / this.equation.dx
-            let dx = Math.sqrt((3 / ((m * m) + 1)))
+            let dx = Math.sqrt((2 / ((m * m) + 1)))
             if (this.equation.dx < 0) dx = -dx
             let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
 
             this.x += dx
             this.y += dy
-            steps.push([this.x, this.y])
+            steps.push([this.x, this.y, seek, avoid])
 
         }
 
@@ -149,6 +170,18 @@ class Virus {
                     let s = steps[Math.round(counter.i)]
                     this.x = s[0]
                     this.y = s[1]
+                    this.fab.seekline.set({
+                        x1: this.x,
+                        y1: this.y,
+                        x2: this.x + s[2].dx,
+                        y2: this.y + s[2].dy
+                    })
+                    this.fab.avoidline.set({
+                        x1: this.x,
+                        y1: this.y,
+                        x2: this.x + s[3].dx,
+                        y2: this.y + s[3].dy
+                    })
                     this.renderpos()
                 },
                 onComplete: () => {
@@ -158,7 +191,7 @@ class Virus {
         } else { // close enough
             this.land()
         }
-        
+
     }
 
 
