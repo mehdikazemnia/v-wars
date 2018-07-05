@@ -1,5 +1,5 @@
 import {
-    TweenLite,
+    TweenLite, Power0, Power1,
 } from 'gsap'
 
 
@@ -16,7 +16,9 @@ class Virus {
         // equation and movements
         this.x = x
         this.y = y
-        this.pace = 100 // steps per second
+        this.pace = 60 // steps per second
+        this.stepSize = 9
+
         this.equation = {
             dx: 0,
             dy: 0
@@ -147,13 +149,13 @@ class Virus {
 
             // calculate the final dx and dy normalized by pace
             let m = this.equation.dy / this.equation.dx
-            let dx = Math.sqrt((2 / ((m * m) + 1)))
+            let dx = Math.sqrt((this.stepSize / ((m * m) + 1)))
             if (this.equation.dx < 0) dx = -dx
-            let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? this.pace : -this.pace
+            let dy = (dx != 0) ? dx * m : (this.y < this.target.y) ? 400 : -400
 
             this.x += dx
             this.y += dy
-            steps.push([this.x, this.y, seek, avoid])
+            steps.push([this.x, this.y, seek, avoid, this.equation.dx, this.equation.dy, dx, dy])
 
         }
 
@@ -162,9 +164,9 @@ class Virus {
         }
         let len = steps.length
 
-        if (len > 5) { // not close enough
+        if (len > 2) { // not close enough
             TweenLite.to(counter, len / this.pace, {
-                ease: Power1.easeOut,
+                ease: Power0.easeNone,
                 i: len - 1,
                 onUpdate: () => {
                     let s = steps[Math.round(counter.i)]
