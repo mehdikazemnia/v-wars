@@ -1,13 +1,12 @@
-Virus wars game <br/>
-The goal is to conquer all the cells
+# Virus Wars
+Simply an abandoned game project
+
 ```
 > npm install
 ```
 ```
-> webpack
+> npm run serve
 ```
-```
-> npm start
-```
-Open localhost:3000<br/>
-Click over your cells, Drag and release over other cells
+
+Visit `localhost:3000`<br/>
+Click over your cells, Drag and drop over others
