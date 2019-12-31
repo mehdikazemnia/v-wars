@@ -11,7 +11,7 @@
     "express": "^4.16.2",
     "fabric": "^1.7.20",
     "gsap": "^1.20.3",
-    "morgan": "^1.9.0",
+    "morgan": "^1.9.1",
     "node-gyp": "^3.6.2",
     "serve-favicon": "^2.4.5"
   },
