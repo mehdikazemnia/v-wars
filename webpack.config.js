@@ -1,9 +1,12 @@
+const path = require('path')
+
 module.exports = {
+    mode: "development",
     devtool: 'inline-source-map',
     entry: './public/js/entry.js',
-    watch: true,
     output: {
-        filename: './public/js/bundle.js',
-        sourceMapFilename: './public/js/bundle.js.map'
+        filename: 'bundle.js',
+        sourceMapFilename: 'bundle.js.map',
+        path: path.resolve(__dirname, 'public/js'),
     }
 };
