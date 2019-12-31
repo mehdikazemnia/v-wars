@@ -9,4 +9,4 @@ Simply an abandoned game project
 ```
 
 Visit `localhost:3000`<br/>
-Click over your cells, Drag and drop over others
+Click over green cells, drag and drop over the others
