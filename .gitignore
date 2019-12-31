@@ -3,3 +3,5 @@
 /.vscode/
 /node_modules/
 /public/js/bundle.js
+v8-compile-cache-0/
+.gitignore
