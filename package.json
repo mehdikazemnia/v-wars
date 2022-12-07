@@ -8,7 +8,7 @@
     "cookie-parser": "^1.4.3",
     "debug": "^3.1.0",
     "ejs": "^2.5.7",
-    "express": "^4.16.2",
+    "express": "^4.17.3",
     "fabric": "^1.7.20",
     "gsap": "^1.20.3",
     "morgan": "^1.9.0",
